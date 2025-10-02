@@ -1,9 +1,10 @@
 import { Server } from 'http';
 
 import app from './app';
-import config from './app/config';
+
 import mongoose from 'mongoose';
-import { initializeSocket } from './socket';
+import config from './app/config';
+// import { initializeSocket } from './socket';
 
 let server: Server;
 
@@ -15,7 +16,7 @@ async function main() {
       console.log(`app is listening on port ${config.port}`);
     });
 
-    initializeSocket(server);
+    // initializeSocket(server);
   } catch (err) {
     console.log(err);
   }

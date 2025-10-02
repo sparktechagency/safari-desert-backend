@@ -3,11 +3,13 @@ import cors from 'cors';
 
 import cookieParser from 'cookie-parser';
 
-import router from './app/routes';
-import globalErrorHandler from './app/middleware/globalErrorHandler';
+
 // import notFound from './app/middleware/notFound';
 // import { stripeWebhookHandler } from './app/webhook/webhook.stripe';
 import path from 'path';
+import router from './app/routes';
+import globalErrorHandler from './app/middleware/globalErrorHandler';
+import notFound from './app/middleware/notFound';
 const app: Application = express();
 //parsers
 app.use(express.json());
@@ -32,7 +34,6 @@ app.use(
       'http://10.10.20.13:3000',
       'http://localhost:5173',
       'http://localhost:5174',
-     
     ],
      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
