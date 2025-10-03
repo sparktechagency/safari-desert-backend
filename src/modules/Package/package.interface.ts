@@ -1,22 +1,24 @@
+import  { Document} from 'mongoose';
+
+// Price sub-document interface
 export interface Price {
   amount: number;
   currency: string;
 }
 
-export interface Package {
-  _id: string;                     // Primary Key
+// Main Package interface extending Mongoose Document
+export interface IPackage extends Document {
   Title: string;
-  image_multi: string[];           // Multiple image URLs
+  image_multi: string[];
   location: string;
   duration: string;
   max_adult: number;
   child_min_age: number;
 
-  pickup?: string;                 // Timings, e.g., "09:00"
-  availability?: string[];         // e.g., ["daily", "weekends"]
+  pickup?: string;
+  availability?: string[];
   activity?: string[];
 
-  // Pricing
   adultPrice: Price;
   childPrice: Price;
   single_sitter_dune_buggy: Price;
@@ -24,9 +26,9 @@ export interface Package {
   quad_bike: Price;
   camel_bike: Price;
 
-  discount?: number;               // Overall discount percentage
+  discount?: number;
 
-  drop_off?: string;               // Timings
+  drop_off?: string;
   note?: string;
   refund_policy?: string;
 
