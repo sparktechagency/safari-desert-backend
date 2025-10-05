@@ -35,13 +35,13 @@ const mineId = payload.user
   return result;
 };
 const deletePackageFromDB = async (id: string) => {
-  const article = await PackageModel.findByIdAndDelete(id);
+  const Package = await PackageModel.findByIdAndDelete(id);
 
-  if (!article) {
-    throw new AppError(httpStatus.NOT_FOUND, 'Article not found!');
+  if (!Package) {
+    throw new AppError(httpStatus.NOT_FOUND, 'Package not found!');
   }
 
-  return article; // return deleted user if needed
+  return Package; // return deleted user if needed
 };
 
 const updatePackageFromDB = async (id:string,payload:IPackage)=>{
@@ -49,7 +49,7 @@ const updatePackageFromDB = async (id:string,payload:IPackage)=>{
  const updated = await PackageModel
     .findByIdAndUpdate(
       id,
-      { $set: payload },                 // শুধু নতুন ইনপুট সেট করবে
+      { $set: payload },  
       { new: true, runValidators: true, context: "query" }
     )
     .populate("user");
