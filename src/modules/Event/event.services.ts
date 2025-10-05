@@ -6,11 +6,11 @@ import { UserModel } from '../User/user.model';
 
 
 import httpStatus from 'http-status';
-import EventModel from './event.model';
+import BlogModel from './event.model';
 import { IEvent } from './event.interface';
 
 const getAllEventFromDB = async (query: Record<string, unknown>) => {
-  const queryBuilder = new QueryBuilder(EventModel.find(), query);
+  const queryBuilder = new QueryBuilder(BlogModel.find(), query);
   queryBuilder.search(['title', 'description']).filter().sort().paginate();
   const result = await queryBuilder.modelQuery.populate('user');
   const meta = await queryBuilder.countTotal();
@@ -18,7 +18,7 @@ const getAllEventFromDB = async (query: Record<string, unknown>) => {
   return { meta, result };
 };
 const getSingleEventFromDB = async (id: string) => {
-  const result = await EventModel.findById(id).populate('user');
+  const result = await BlogModel.findById(id).populate('user');
   return result;
 };
 
@@ -31,11 +31,11 @@ const mineId = payload.user
     throw new Error('User not found');
   }
 
-  const result = (await EventModel.create(payload)).populate('user');
+  const result = (await BlogModel.create(payload)).populate('user');
   return result;
 };
 const deleteEventFromDB = async (id: string) => {
-  const event = await EventModel.findByIdAndDelete(id);
+  const event = await BlogModel.findByIdAndDelete(id);
 
   if (!event) {
     throw new AppError(httpStatus.NOT_FOUND, 'Event not found!');
@@ -46,7 +46,7 @@ const deleteEventFromDB = async (id: string) => {
 
 const updateEventFromDB = async (id:string,payload:IEvent)=>{
 
- const updated = await EventModel
+ const updated = await BlogModel
     .findByIdAndUpdate(
       id,
       { $set: payload },  

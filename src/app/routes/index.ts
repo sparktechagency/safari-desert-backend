@@ -3,6 +3,7 @@ import { AuthRoutes } from '../../modules/Auth/auth.routes';
 import { UserRoutes } from '../../modules/User/user.routes';
 import { PackageRoutes } from '../../modules/Package/package.routes';
 import { EventRoutes } from '../../modules/Event/event.routes';
+import { BlogRoutes } from '../../modules/Blog/blog,routes';
 
 
 
@@ -24,6 +25,10 @@ const moduleRoutes = [
   {
     path: '/event',
     route:EventRoutes
+  },
+  {
+    path: '/blog',
+    route:BlogRoutes
   },
 
 ];

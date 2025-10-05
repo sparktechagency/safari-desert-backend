@@ -20,6 +20,6 @@ const EventSchema: Schema = new Schema<IEvent>(
 );
 
 // 3. Export the model
-const EventModel = mongoose.model<IEvent>('Event', EventSchema);
+const BlogModel = mongoose.model<IEvent>('Event', EventSchema);
 
-export default EventModel;
+export default BlogModel;
