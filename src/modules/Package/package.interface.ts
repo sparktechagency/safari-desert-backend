@@ -1,4 +1,4 @@
-import  { Document} from 'mongoose';
+import  mongoose, { Document} from 'mongoose';
 
 // Price sub-document interface
 export interface Price {
@@ -8,8 +8,9 @@ export interface Price {
 
 // Main Package interface extending Mongoose Document
 export interface IPackage extends Document {
+     user: mongoose.Types.ObjectId;
   Title: string;
-  image_multi: string[];
+  images: string[];
   location: string;
   duration: string;
   max_adult: number;

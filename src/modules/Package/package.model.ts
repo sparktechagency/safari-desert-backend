@@ -13,8 +13,13 @@ const PriceSchema = new Schema<Price>(
 // Package schema
 const PackageSchema: Schema = new Schema<IPackage>(
   {
+      user: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'User',  // Reference to User model (you should have a 'User' model)
+    required: [true, 'User reference is required'],
+  },
     Title: { type: String, required: true, trim: true },
-    image_multi: { type: [String], default: [] },
+    images: { type: [String], default: [] },
     location: { type: String, required: true, trim: true },
     duration: { type: String, required: true },
     max_adult: { type: Number, required: true, min: 1 },
