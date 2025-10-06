@@ -49,4 +49,8 @@ router.patch('/update-package/:id',
   auth(USER_ROLE.superAdmin),
     PackageControllers.updatePackage)
 
+router.post('/checkout',PackageControllers.initiateOrderPayment)
+
+
+
 export const PackageRoutes = router;

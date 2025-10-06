@@ -1,201 +1,212 @@
-// /* eslint-disable @typescript-eslint/no-explicit-any */
-// import Stripe from 'stripe';
-// import { Request, Response } from 'express';
-// import httpStatus from 'http-status';
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import Stripe from 'stripe';
+import { Request, Response } from 'express';
+import config from './config';
+import sendEmail from '../utils/sendEmail';
 
-// import config from '../config';
-// import catchAsync from '../utils/catchAsync';
-// import AppError from '../../errors/AppError';
-// import { UserServices } from '../../modules/User/user.services';
-
-// import sendEmail from '../../utils/sendEmail';
-// import BookServiceModel from '../../modules/BookService/bookservice.model';
-// import addPeriodToDate from '../../utils/addPeriodDate';
-
-// // import billingServices from '../modules/billingModule/billing.services';
-
-// const stripe = new Stripe(config.stripe_secret_key as string);
-
-// export const stripeWebhookHandler = catchAsync(
-//   async (req: Request, res: Response) => {
-//     const sig = req.headers['stripe-signature']!;
-//     const webhookSecret = config.webhook_secret_key;
-
-//     let event: Stripe.Event;
-
-//     try {
-//       event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret!);
-//     } catch (err: any) {
-//       console.error('Webhook signature verification failed:', err.message);
-//       throw new AppError(httpStatus.BAD_REQUEST, 'No items in the order.');
-//     }
-
-//     const session = event.data.object as Stripe.Checkout.Session;
-//     const userId = session.customer as string;
-
-//     const user = await UserServices.getSingleUserFromDB(userId);
-
-//     if (!user) throw new AppError(httpStatus.BAD_REQUEST, 'No user found.');
-//     // helper: map Stripe timestamp to Date
-
-//     switch (event.type) {
-//       // case 'checkout.session.completed': {
-//       //   console.log('Checkout session completed');
-
-//       //   const bookServiceId =
-//       //     session.metadata?.bookServiceId || session.client_reference_id || '';
-//       //   console.log('book service id from webhook 2--------->', bookServiceId);
-//       //   // 1) Update the specific BookService (if you provided its id in metadata)
-//       //   if (bookServiceId) {
-//       //     try {
-//       //       await BookServiceModel.findByIdAndUpdate(
-//       //         bookServiceId,
-//       //         { $set: { paymentStatus: 'paid', paidAt: new Date() } },
-//       //         { new: true },
-//       //       );
-//       //       console.log(`BookService ${bookServiceId} marked as paid`);
-//       //     } catch (e) {
-//       //       console.error('BookService update failed:', e);
-//       //     }
-//       //   } else {
-//       //     console.warn(
-//       //       'No bookServiceId found in session metadata/client_reference_id',
-//       //     );
-//       //   }
-
-//       //   break;
-//       // }
-//       case 'checkout.session.completed': {
-//         const session = event.data.object as Stripe.Checkout.Session;
-//         const metadata = session.metadata || {};
-
-//         const isSubscription =
-//           Boolean(metadata.plan) || Boolean(metadata.membershipId);
-
-//         // resolve user (id or email)
-//         let user: any = null;
-//         const possibleUserId =
-//           (metadata.userId as string | undefined) ||
-//           (session.customer as string | undefined);
-//         if (possibleUserId) {
-//           try {
-//             user = await UserServices.getSingleUserFromDB(possibleUserId);
-//           } catch (error) {
-//             console.log(error);
-//           }
-//         }
-//         if (!user && session.customer_email) {
-//           try {
-//             user = await UserServices.getSingleUserFromDB(
-//               session.customer_email,
-//             );
-//           } catch (error) {
-//             console.log(error);
-//           }
-//         }
-
-//         if (isSubscription) {
-//           // ---------------- SUBSCRIPTION FLOW ----------------
-//           if (user) {
-//             const plan =
-//               metadata.plan === 'yearly'
-//                 ? 'yearly'
-//                 : ('monthly' as 'monthly' | 'yearly');
-//             const price = parseFloat(
-//               String(
-//                 metadata.price || Number(session.amount_total || 0) / 100 || 0,
-//               ),
-//             );
-
-//             const now = new Date();
-//             let startedAt = now;
-//             if (
-//               user.subscription?.expiryDate &&
-//               new Date(user.subscription.expiryDate) > now
-//             ) {
-//               startedAt = new Date(user.subscription.expiryDate);
-//             }
-
-//             const expiryDate = addPeriodToDate(startedAt, plan);
-
-   
-//             user.subscription = {
-//               membershipId:
-//                 (metadata.membershipId as string) ||
-//                 user.subscription?.membershipId,
-//               plan,
-//               price,
-//               startedAt,
-//               expiryDate,
-//               status: 'active',
-//             };
-//             if (session.customer)
-//               user.stripeCustomerId = String(session.customer);
-//      //  Update role logic
-//  if (user.role === 'user' || user.role === 'vipMember') {
-//   user.role = 'vipMember';
-// } else if (user.role === 'contractor' || user.role === 'vipContractor') {
-//   user.role = 'vipContractor';
-// }
+const stripe = new Stripe(config.stripe_secret_key as string);
 
 
-//       await user.save();
-//             console.log(
-//               `Subscription activated for ${user.email} until ${expiryDate} with role ${user.role}`,
-//             );
+function isNonEmptyString(x: unknown): x is string {
+  return typeof x === 'string' && x.length > 0;
+}
 
-//             try {
-//               await sendEmail({
-//                 from: config.SMTP_USER as string,
-//                 to: user.email,
-//                 subject: 'Subscription activated',
-//                 text: `Your subscription is active until ${expiryDate.toISOString()}`,
-//               });
-//             } catch (e) {
-//               console.warn('Email send failed:', e);
-//             }
-//           } else {
-//             console.warn(
-//               'Subscription session completed but user not found:',
-//               session.id,
-//             );
-//           }
-//         } else {
-//           // ---------------- ONE-TIME SERVICE FLOW ----------------
-//           const bookServiceId =
-//             (metadata.bookServiceId as string) ||
-//             (session.client_reference_id as string) ||
-//             '';
-//           if (bookServiceId) {
-//             await BookServiceModel.findByIdAndUpdate(
-//               bookServiceId,
-//               { $set: { paymentStatus: 'paid', paidAt: new Date() } },
-//               { new: true },
-//             );
-//             console.log(`BookService ${bookServiceId} marked as paid`);
-//           } else {
-//             console.warn(
-//               'No bookServiceId found in one-time checkout session',
-//               session.id,
-//             );
-//           }
-//         }
-//         break;
-//       }
-//       case 'invoice.payment_failed': {
-//         console.warn('Payment failed for invoice', session.id);
+function isLiveCustomer(
+  c: Stripe.Customer | Stripe.DeletedCustomer | null | undefined
+): c is Stripe.Customer {
+  return !!c && !('deleted' in c && c.deleted === true);
+}
 
-//         const content = `Your subscription purchase has failed!`;
-//         await sendEmail({
-//           from: config.SMTP_USER as string,
-//           to: user.email,
-//           subject: 'Illuminate Muslim Minds - Subscription Payment Failed',
-//           text: content,
-//         });
-//         break;
-//       }
-//     }
+// Pull email from Stripe (Checkout session + fallbacks)
+export async function getEmailFromStripeSession(
+  sessionId: string
+): Promise<string | undefined> {
+  const session = await stripe.checkout.sessions.retrieve(sessionId, {
+    expand: ['customer', 'payment_intent', 'payment_intent.latest_charge'],
+  });
 
-//     res.status(200).json({ received: true });
-//   },
-// );
+  // payment_intent.latest_charge can be string | Charge | null
+  const pi = (session.payment_intent ?? null) as Stripe.PaymentIntent | null;
+  let chargeEmail: string | undefined;
+  if (pi?.latest_charge && typeof pi.latest_charge !== 'string') {
+    const ch = pi.latest_charge as Stripe.Charge;
+    chargeEmail = ch.billing_details?.email ?? undefined; // null → undefined
+  }
+
+  const customerObj =
+    typeof session.customer === 'string' ? undefined : session.customer;
+
+  const candidates: Array<string | undefined> = [
+    session.customer_details?.email ?? undefined, // (string | null) → string | undefined
+    session.customer_email ?? undefined,          // (string | null) → string | undefined
+    isLiveCustomer(customerObj) ? customerObj.email ?? undefined : undefined,
+    chargeEmail,
+  ];
+
+  // pick first non-empty string
+  let email = candidates.find(isNonEmptyString);
+
+  // last resort: fetch customer if we only have an id string
+  if (!email && typeof session.customer === 'string') {
+    const cust = await stripe.customers.retrieve(session.customer);
+    if (isLiveCustomer(cust as any)) {
+      const c = cust as Stripe.Customer;
+      if (isNonEmptyString(c.email)) email = c.email;
+    }
+  }
+
+  return email;
+}
+
+export const stripeWebhookHandler = async (req: Request, res: Response) => {
+  const sig = req.headers['stripe-signature'] as string | undefined;
+  const webhookSecret = config.webhook_secret_key;
+
+  if (!sig || !webhookSecret) {
+    // 400 => Stripe will NOT retry; correct because this is a bad request
+    return res.status(400).send('Missing Stripe signature or webhook secret');
+  }
+
+  let event: Stripe.Event;
+  try {
+    // req.body is a raw Buffer (because of bodyParser.raw on this route)
+    event = stripe.webhooks.constructEvent(req.body, sig, webhookSecret);
+  } catch (err: any) {
+    console.error('Webhook signature verification failed:', err?.message);
+    // 400 => do not retry (invalid signature)
+    return res.status(400).send(`Webhook Error: ${err?.message}`);
+  }
+
+  try {
+    switch (event.type) {
+      case 'checkout.session.completed': {
+        const raw = event.data.object as Stripe.Checkout.Session;
+
+        // Expand everything we’ll need in one round-trip
+        const session = await stripe.checkout.sessions.retrieve(raw.id, {
+          expand: ['line_items', 'payment_intent', 'payment_intent.latest_charge', 'customer'],
+        });
+
+        // Your reference(s)
+        const orderRef =
+          session.client_reference_id ||
+          session.metadata?.bookProcessId ||
+          session.metadata?.bookServiceId;
+
+        // Email from Stripe (truth)
+        const email = await getEmailFromStripeSession(session.id);
+
+        // Common useful fields
+        const currency = session.currency?.toUpperCase();
+        const amountTotal = session.amount_total ?? 0; // minor units (e.g., cents/fils)
+        const paymentIntentId =
+          typeof session.payment_intent === 'string'
+            ? session.payment_intent
+            : (session.payment_intent as Stripe.PaymentIntent | null)?.id;
+
+        const items =
+          session.line_items?.data?.map((li) => ({
+            description: li.description,
+            quantity: li.quantity ?? 1,
+            amount_total: li.amount_total,       // minor units
+            amount_subtotal: li.amount_subtotal, // minor units
+            currency,
+            priceId:
+              typeof li.price === 'string'
+                ? li.price
+                : (li.price as Stripe.Price | null)?.id,
+          })) ?? [];
+
+        // TODO: persist in your DB
+        // await OrderService.markPaid({
+        //   orderRef,
+        //   checkoutSessionId: session.id,
+        //   paymentIntentId,
+        //   amountTotal,
+        //   currency,
+        //   items,
+        //   customerSnapshot: {
+        //     email,
+        //     name: session.customer_details?.name
+        //       || (typeof session.customer !== 'string'
+        //             ? (session.customer as Stripe.Customer).name ?? undefined
+        //             : undefined),
+        //     phone: session.customer_details?.phone
+        //       || (typeof session.customer !== 'string'
+        //             ? (session.customer as Stripe.Customer).phone ?? undefined
+        //             : undefined),
+        //     address: session.customer_details?.address
+        //       || (typeof session.customer !== 'string'
+        //             ? (session.customer as Stripe.Customer).address ?? undefined
+        //             : undefined),
+        //   },
+        //   metadata: session.metadata ?? {},
+        // });
+        // Send confirmation email (if available)
+
+
+        if (email) {
+          await sendEmail({
+            from: config.SMTP_USER as string,
+            to: email,
+            subject: 'Payment received',
+            text: `Thanks! Your payment was successful.\nRef: ${orderRef ?? session.id}`,
+          });
+        }
+
+        break;
+      }
+
+   case 'invoice.payment_failed': {
+  const invoice = event.data.object as Stripe.Invoice;
+
+  // 1) try the invoice's own customer_email first
+  let email: string | undefined = invoice.customer_email ?? undefined;
+
+  // 2) if the invoice has an expanded customer object, use it (but narrow!)
+  if (!email && typeof invoice.customer !== 'string' && invoice.customer) {
+    const c = invoice.customer; // Stripe.Customer | Stripe.DeletedCustomer
+
+    // DeletedCustomer has a boolean `deleted: true` and no email
+    if (!('deleted' in c && c.deleted === true)) {
+      email = (c as Stripe.Customer).email ?? undefined;
+    }
+  }
+
+  // 3) if only an id is present, fetch the customer and narrow
+  if (!email && typeof invoice.customer === 'string') {
+    const cust = await stripe.customers.retrieve(invoice.customer);
+    // `cust` is Stripe.Response<Customer | DeletedCustomer>
+    // Deleted customers have `deleted: true`
+    if (!('deleted' in cust && (cust as any).deleted === true)) {
+      email = (cust as Stripe.Customer).email ?? undefined;
+    }
+  }
+
+  if (email) {
+    await sendEmail({
+      from: config.SMTP_USER as string,
+      to: email,
+      subject: 'Payment failed',
+      text: 'Your payment failed. Please update your payment method.',
+    });
+  }
+
+  break;
+}
+
+      default: {
+        // Log and ignore events you don’t handle
+        console.log(`Unhandled event type: ${event.type}`);
+        break;
+      }
+    }
+
+    // 200 => Stripe stops retrying
+    return res.json({ received: true });
+  } catch (err: any) {
+    console.error('Webhook handler error:', err);
+    // 500 => Stripe WILL retry later (good for transient failures)
+    return res.status(500).send('Webhook handler failure');
+  }
+};

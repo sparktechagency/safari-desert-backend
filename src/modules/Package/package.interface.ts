@@ -9,7 +9,7 @@ export interface Price {
 // Main Package interface extending Mongoose Document
 export interface IPackage extends Document {
      user: mongoose.Types.ObjectId;
-  Title: string;
+  title: string;
   images: string[];
   location: string;
   duration: string;

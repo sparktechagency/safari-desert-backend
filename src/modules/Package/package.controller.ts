@@ -6,6 +6,10 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
 import { PackageServices } from './package.services';
+import config from '../../app/config';
+import { stripe } from '../../utils/stripeClient';
+import AppError from '../../errors/AppError';
+import PackageModel from './package.model';
 
 
 
@@ -132,7 +136,86 @@ payload.user = req?.user?.userId
 })
 
 
+//stripe  payment initiate
+
+const initiateOrderPayment = catchAsync(async (req: Request, res: Response) => {
+
+    // console.log("user------>",user?.email);
+    const { item} = req.body; // use item, not items
+
+    const email = item?.customerEmail
+    const id = item?.packageId
+//   console.log('package id--->', id);
+  if (!item) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'No item in the order.');
+  }
+
+  const Package = await PackageModel.findById(id);
+  if (!Package) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Service not found.');
+  }
+// console.log("package->",Package);
+  // currency
+  const currency = String(item.currency || 'USD').toUpperCase();
+  if (!['USD', 'AED'].includes(currency)) {
+    throw new AppError(httpStatus.BAD_REQUEST, 'Unsupported currency.');
+  }
+
+  const basePrice = Number(item.price);
+
+  const lineItem = {
+    price_data: {
+      currency: item.currency,
+      product_data: {
+        name: Package.title,
+      },
+      unit_amount: Math.round(basePrice * 100),
+    },
+    quantity: 1,
+  };
+
+  const baseUrl = (config.frontend_url || '').replace(/\/+$/, '');
+  if (!baseUrl) throw new Error('FRONTEND_URL not configured');
+
+  const session = await stripe.checkout.sessions.create({
+    payment_method_types: ['card'],
+    line_items: [lineItem], 
+    mode: 'payment',
+    customer_email: email,  
+    customer_creation: 'always',
+    phone_number_collection: { enabled: true },
+
+    shipping_address_collection: { allowed_countries: ['AE','BD'] },
+
+    client_reference_id: String(id),
+
+    success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${baseUrl}/cancel`,
+    metadata: {
+      bookProcessId: String(id),
+    },
+  });
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Order created successfully',
+    data: { url: session.url },
+  });
+});
+
+
+
+
+
+
+
+
+
+
+
+
 
 export const PackageControllers = {
-deletePackage,createPackage,getAllPackage,getSinglePackage,updatePackage
+deletePackage,createPackage,getAllPackage,getSinglePackage,updatePackage,initiateOrderPayment
 };

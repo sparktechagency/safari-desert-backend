@@ -18,7 +18,7 @@ const PackageSchema: Schema = new Schema<IPackage>(
     ref: 'User',  // Reference to User model (you should have a 'User' model)
     required: [true, 'User reference is required'],
   },
-    Title: { type: String, required: true, trim: true },
+    title: { type: String, required: true, trim: true },
     images: { type: [String], default: [] },
     location: { type: String, required: true, trim: true },
     duration: { type: String, required: true },
