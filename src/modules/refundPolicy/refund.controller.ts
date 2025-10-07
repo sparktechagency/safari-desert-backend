@@ -12,7 +12,7 @@ import catchAsync from '../../utils/catchAsync';
 
 // Controller to create or update Privacy Policy content
 const createOrUpdateTerms = catchAsync(async (req: Request, res: Response) => {
-  const { termsCondition } = req.body;
+  const { refundPolicy } = req.body;
 
   // Check if Privacy Policy exists; if it does, update, otherwise create
   const existingTerms = await Terms.findOne();
@@ -21,7 +21,7 @@ const createOrUpdateTerms = catchAsync(async (req: Request, res: Response) => {
     // Update the existing Privacy Policy record
     const updatedPrivacyPolicy = await Terms.updateOne(
       { _id: existingTerms._id },
-      { termsCondition },
+      { refundPolicy },
       { runValidators: true },
     );
 
@@ -37,7 +37,7 @@ const createOrUpdateTerms = catchAsync(async (req: Request, res: Response) => {
     }); 
   } else {
     // Create a new Privacy Policy record
-    const newTerms = await Terms.create({ termsCondition });
+    const newTerms = await Terms.create({ refundPolicy });
 
     if (!newTerms) {
     throw new AppError(httpStatus.BAD_REQUEST,('Failed to Refund'));
