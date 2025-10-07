@@ -199,6 +199,8 @@ export const forgotPass = async (email: string) => {
 };
 export const verifyOTP = async (email: string, otp: string) => {
   const user = await UserModel.findOne({ email });
+  // console.log("user-------->",user);
+  // console.log("email-------->",email);
   if (!user) {
     throw new AppError(httpStatus.NOT_FOUND, 'User not found');
   }

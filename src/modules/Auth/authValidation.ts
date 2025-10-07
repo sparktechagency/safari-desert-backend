@@ -25,13 +25,44 @@ export const registerUserValidationSchema = z.object({
 
 export const editProfileSchema = z.object({
   body:z.object({
-    firstName: z.string().min(1, "First name is required").optional(),
-    lastName: z.string().min(1, "Last name is required").optional(),
-    bio: z.string().max(500, "Bio can't be longer than 500 characters").optional(),
+    name: z.string().min(1, "Name is required").optional(),
+    
   })
 });
 
+const forgotPasswordSchema = z.object({
+      body: z.object({ email: z.string().email("Invalid email address"),})
+ 
+});
 
+export const verifyOtpSchema = z.object({ 
+  body: z.object({
+    email: z.string().email("Invalid email address"),
+    otp: z.string()
+      .length(6, "OTP must be exactly 6 digits")
+      .regex(/^\d+$/, "OTP must contain only digits"),
+  }),
+});
+const changePasswordValidationSchema = z.object({
+  body: z.object({
+
+    oldPassword: z.string().min(1, { message: 'Old password is required' }),
+    newPassword: z.string().min(1, { message: 'New password is required' }),
+  }),
+});
+const resetPasswordValidationSchema = z.object({
+  body: z.object({
+        email: z.string().email("Invalid email address"),
+    oldPassword: z.string().min(1, { message: 'Old password is required' }),
+    newPassword: z.string().min(1, { message: 'New password is required' }),
+  }),
+});
+
+const refreshTokenValidationSchema = z.object({
+  cookie: z.object({
+    refreshToken: z.string().min(1, { message: 'Refresh token is required!' }),
+  }),
+});
 
 
 
@@ -39,7 +70,7 @@ export const editProfileSchema = z.object({
 export const AuthValidation = {
   loginValidationSchema,
   registerUserValidationSchema,
-  editProfileSchema
+  editProfileSchema,forgotPasswordSchema,verifyOtpSchema,changePasswordValidationSchema,resetPasswordValidationSchema,refreshTokenValidationSchema
 
   
 };

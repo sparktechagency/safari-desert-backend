@@ -5,8 +5,7 @@ import { USER_ROLE } from '../Auth/auth.constant';
 
 export type TUser = {
     _id:string;
-  firstName: string;
-  lastName: string;
+  name: string;
   image?: string;
   email: string;
   password: string;

@@ -21,7 +21,34 @@ router.post('/login',
     validateRequest(AuthValidation.loginValidationSchema),
     AuthControllers.userLogin
 );
-
+router.post('/changePassword',
+    auth(
+        USER_ROLE.superAdmin,
+       
+      ),
+    validateRequest(AuthValidation.changePasswordValidationSchema),
+    AuthControllers.changePassword
+)
+router.post(
+  '/refresh-token',
+  validateRequest(AuthValidation.refreshTokenValidationSchema),
+  AuthControllers.refreshToken,
+);
+router.post(
+  '/forgotPass',
+  validateRequest(AuthValidation.forgotPasswordSchema),
+  AuthControllers.forgotPassword,
+);
+router.post(
+  '/resetPass',
+  validateRequest(AuthValidation.resetPasswordValidationSchema),
+  AuthControllers.resetPassword,
+);
+router.post(
+  '/verifyOtp',
+  validateRequest(AuthValidation.verifyOtpSchema),
+  AuthControllers.verifyYourOTP,
+);
 
 
 export const AuthRoutes = router;

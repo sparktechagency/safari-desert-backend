@@ -7,8 +7,8 @@ import { UserStatus } from '../Auth/auth.constant';
 
 const userSchema = new Schema<TUser, User, IUserMethods>(
   {
-    firstName: { type: String, required: true },
-    lastName: { type: String, required: true },
+    name: { type: String, required: true },
+
     image: { type: String },
 
     email: { type: String, required: true, unique: true },

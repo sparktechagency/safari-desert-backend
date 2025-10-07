@@ -14,31 +14,30 @@ import sendResponse from '../../utils/sendResponse';
 
 
 
-const updateProfile = catchAsync(
-  async (req: Request, res: Response): Promise<void> => {
-       const id =req?.user?.userId
-
-    const payload: TEditProfile = { ...req.body };
-
-
-    if (req.file){
-      const path = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`; 
-      payload.image = path; 
-    }
+const updateProfile = catchAsync(async (req: Request, res: Response) => {
+  console.log("req.user",req.user);
+  const id = req?.user?.userId
+  const payload: TEditProfile = { ...req.body };
 
 
-    const result = await UserServices.updateProfileFromDB(id, payload);
+  if (req.file) {
+    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    payload.image = imageUrl;
 
-    sendResponse(res, {
-      statusCode: httpStatus.OK,
-      success: true,
-      message: 'Profile updated successfully',
-      data: result,
-    });
-  },
-);
+  }
 
+  console.log("payload----->", payload);
 
+  const result = await UserServices.updateProfileFromDB(id, payload);
+  console.log("result--->", result);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Profile updated successfully',
+    data: result,
+  });
+});
 
 
 export const UserControllers = {

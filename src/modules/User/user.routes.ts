@@ -8,9 +8,10 @@ import validateRequest from '../../app/middleware/validateRequest';
 import { UserControllers } from './user.controller';
 import { upload } from '../../app/middleware/upload';
 import { editProfileSchema } from '../Auth/authValidation';
+import auth from '../../app/middleware/auth';
+import { USER_ROLE } from '../Auth/auth.constant';
 
 const router = express.Router();
-
 
 
 
@@ -22,16 +23,28 @@ router.patch(
   '/edit-profile',
   upload.single('image'),
   (req: Request, res: Response, next: NextFunction) => {
-    // console.log("req--->",req.body);
-    if (req.body.data) {
-      req.body = JSON.parse(req.body.data);
+    try {
+      if (req.body.data) {
+        const parsedData = JSON.parse(req.body.data);
+
+        // Merge parsed JSON fields into req.body (preserve file info)
+        req.body = {
+          ...req.body,
+          ...parsedData,
+        };
+      }
+
+
+      next();
+    } catch (error) {
+   
+      return res.status(400).json({ message: 'Invalid data format' });
     }
-    next();
   },
+  auth(USER_ROLE.superAdmin),
   validateRequest(editProfileSchema),
   UserControllers.updateProfile,
 );
-
 
 
 
