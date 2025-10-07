@@ -6,6 +6,7 @@ import { EventRoutes } from '../../modules/Event/event.routes';
 import { BlogRoutes } from '../../modules/Blog/blog,routes';
 import privacyPolicyRouter from '../../modules/PrivacyPolicy/privacyPolicy.routes';
 import termsRouter from '../../modules/Terms/terms.route';
+import aboutRouter from '../../modules/about/about.route';
 
 
 
@@ -39,6 +40,10 @@ const moduleRoutes = [
   {
     path: '/terms',
     route:termsRouter
+  },
+  {
+    path: '/about',
+    route:aboutRouter
   },
 
 ];
