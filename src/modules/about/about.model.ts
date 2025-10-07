@@ -11,5 +11,5 @@ export const privacyPolicySchema = new mongoose.Schema<IAbout>(
   },
 );
 
-const Terms = mongoose.model<IAbout>('about', privacyPolicySchema);
-export default Terms;
+const Refund = mongoose.model<IAbout>('about', privacyPolicySchema);
+export default Refund;

@@ -7,6 +7,7 @@ import { BlogRoutes } from '../../modules/Blog/blog,routes';
 import privacyPolicyRouter from '../../modules/PrivacyPolicy/privacyPolicy.routes';
 import termsRouter from '../../modules/Terms/terms.route';
 import aboutRouter from '../../modules/about/about.route';
+import refundRouter from '../../modules/refundPolicy/refund.route';
 
 
 
@@ -44,6 +45,10 @@ const moduleRoutes = [
   {
     path: '/about',
     route:aboutRouter
+  },
+  {
+    path: '/refund',
+    route:refundRouter
   },
 
 ];
