@@ -48,6 +48,6 @@ router.patch(
 
 
 
-// router.get('/dashboard/stats', UserControllers.getDashboardStats);
+router.get('/dashboard/stats', UserControllers.getDashboardStats);
 
 export const UserRoutes = router;

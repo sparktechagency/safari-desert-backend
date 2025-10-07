@@ -39,9 +39,21 @@ const updateProfile = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getDashboardStats = catchAsync(async (req: Request, res: Response) => {
+
+
+  const result = await UserServices.getDashboardStatsFromDB();
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Dashboard stats retrive successfully!',
+    data: result,
+  });
+});
 
 export const UserControllers = {
 
   updateProfile,
-
+getDashboardStats
 };

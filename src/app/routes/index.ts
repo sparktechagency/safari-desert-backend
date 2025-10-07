@@ -4,6 +4,8 @@ import { UserRoutes } from '../../modules/User/user.routes';
 import { PackageRoutes } from '../../modules/Package/package.routes';
 import { EventRoutes } from '../../modules/Event/event.routes';
 import { BlogRoutes } from '../../modules/Blog/blog,routes';
+import privacyPolicyRouter from '../../modules/PrivacyPolicy/privacyPolicy.routes';
+import termsRouter from '../../modules/Terms/terms.route';
 
 
 
@@ -29,6 +31,14 @@ const moduleRoutes = [
   {
     path: '/blog',
     route:BlogRoutes
+  },
+  {
+    path: '/privacy',
+    route:privacyPolicyRouter
+  },
+  {
+    path: '/terms',
+    route:termsRouter
   },
 
 ];
