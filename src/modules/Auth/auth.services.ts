@@ -96,7 +96,7 @@ const changePassword = async (
 // forgot password api
 const resetPassword = async (
 
-  payload: {email:string, oldPassword: string; newPassword: string },
+  payload: {email:string,newPassword: string },
 ) => {
   // checking if the user is exist
   // console.log("payload->",payload);
@@ -108,8 +108,8 @@ const resetPassword = async (
 
   //checking if the password is correct
 
-  if (!(await UserModel.isPasswordMatched(payload.oldPassword, user?.password)))
-    throw new AppError(httpStatus.FORBIDDEN, 'Password do not matched');
+
+
 
   //hash new password
   const newHashedPassword = await bcrypt.hash(

@@ -11,8 +11,8 @@ const loginValidationSchema = z.object({
 
 export const registerUserValidationSchema = z.object({
    body: z.object({
-      firstName: z.string().trim().min(1, { message: "First name is required" }),
-      lastName: z.string().trim().min(1, { message: "Last name is required" }),
+      name: z.string().trim().min(1, { message: "Name is required" }),
+   
   
       email: z.string().trim().email("Invalid email address"),
  
@@ -53,10 +53,9 @@ const changePasswordValidationSchema = z.object({
 const resetPasswordValidationSchema = z.object({
   body: z.object({
         email: z.string().email("Invalid email address"),
-    oldPassword: z.string().min(1, { message: 'Old password is required' }),
     newPassword: z.string().min(1, { message: 'New password is required' }),
-  }),
-});
+  }).strict(),
+})
 
 const refreshTokenValidationSchema = z.object({
   cookie: z.object({
