@@ -10,9 +10,12 @@ const EventSchema: Schema = new Schema<IEvent>(
       },
     title: { type: String, required: true, trim: true },
     image: { type: String }, // store image URL or path
-    start_time: { type: Date, required: true },
-    end_time: { type: Date, required: true },
+    start_time: { type: String, required: true },
+    end_time: { type: String, required: true },
+    max_adult: { type: String, required: true },
+    max_child: { type: String, required: true },
     description: { type: String, trim: true },
+     features: { type: [String], default: [] },
   },
   {
     timestamps: true, // adds createdAt, updatedAt

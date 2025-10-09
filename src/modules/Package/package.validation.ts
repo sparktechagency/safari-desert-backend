@@ -34,7 +34,7 @@ export const createPackage = z
     body:z.object({
 
         
-            Title: z.string().trim().min(1, "Title is required"),
+            title: z.string().trim().min(1, "Title is required"),
             location: z.string().trim().min(1),
             duration: z.string().trim().min(1),
             max_adult: z.number().int().min(1),
