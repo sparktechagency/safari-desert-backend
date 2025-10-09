@@ -5,11 +5,15 @@ export interface Price {
   amount: number;
   currency: string;
 }
-
+export interface Availability {
+  start: string;
+  end: string;
+}
 // Main Package interface extending Mongoose Document
 export interface IPackage extends Document {
      user: mongoose.Types.ObjectId;
   title: string;
+  coverImage: string;
   images: string[];
   location: string;
   duration: string;
@@ -17,7 +21,7 @@ export interface IPackage extends Document {
   child_min_age: number;
 
   pickup?: string;
-  availability?: string[];
+  availability:Availability;
   activity?: string[];
 
   adultPrice: Price;

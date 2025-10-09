@@ -24,6 +24,23 @@ export const priceZ = z
   })
   .strict();
 
+// Validate date string in YYYY-MM-DD format
+const dateStringZ = z
+  .string()
+  .trim()
+  .regex(/^\d{4}-\d{2}-\d{2}$/, "Must be a valid date in YYYY-MM-DD format");
+
+// Availability object with start and end
+export const availabilityZ = z
+  .object({
+    start: dateStringZ,
+    end: dateStringZ,
+  })
+  .refine((data) => data.end >= data.start, {
+    message: "End date must be the same or after start date",
+    path: ["end"], // error will appear on the 'end' field
+  });
+
 /** Reusable array of trimmed strings; defaults to [] when omitted. */
 const stringArrayZ = z.array(z.string().trim()).default([]);
 
@@ -41,7 +58,7 @@ export const createPackage = z
             child_min_age: z.number().int().min(0),
         
             pickup: z.string().trim().optional(),
-            availability: stringArrayZ,
+            availability: availabilityZ,
             activity: stringArrayZ,
         
             adultPrice: priceZ,

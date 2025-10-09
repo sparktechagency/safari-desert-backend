@@ -12,23 +12,44 @@ import validateRequest from "../../app/middleware/validateRequest";
 
 const router = express.Router();
 
+// router.post(
+//   "/create-package",
+//   upload.array("image"),
+//   (req: Request, res: Response, next: NextFunction) => {
+//     // console.log("req data--->",req.body.data);
+//     if (req.body.data) {
+//       req.body = JSON.parse(req.body.data);
+//     }
+//     next();
+//   },
+
+//   auth(USER_ROLE.superAdmin),
+//   validateRequest(createPackage),
+//   PackageControllers.createPackage
+// );
+
 router.post(
   "/create-package",
-  upload.array("image"),
+  upload.fields([
+    { name: "coverImage", maxCount: 1 },
+    { name: "image", maxCount: 12 },
+  ]),
   (req: Request, res: Response, next: NextFunction) => {
-    // console.log("req data--->",req.body.data);
-    if (req.body.data) {
-      req.body = JSON.parse(req.body.data);
+    try {
+      if (req.body.data) {
+        req.body = JSON.parse(req.body.data);
+      }
+      next();
+    } catch (err) {
+      next(err);
     }
-    next();
   },
-
   auth(USER_ROLE.superAdmin),
   validateRequest(createPackage),
   PackageControllers.createPackage
 );
 
-// router.get('/retrive/:userId',UserControllers.getSingleUser)
+
 
 router.get("/allPackage", PackageControllers.getAllPackage);
 

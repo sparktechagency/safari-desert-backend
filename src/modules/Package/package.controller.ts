@@ -38,52 +38,98 @@ const getSinglePackage= catchAsync(async(req:Request,res:Response)=>{
 })
 
 
-const createPackage = async (
-  req: Request,
-  res: Response,
-  next: NextFunction,
-) => {
-//   console.log("create revieew-->",req.body);
-//   const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
+// const createPackage = async (
+//   req: Request,
+//   res: Response,
+//   next: NextFunction,
+// ) => {
+// //   console.log("create revieew-->",req.body);
+// //   const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
+//   const uploadedCoverImage = req.file ? `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}` : null;
+//   console.log("uploadedCoverImage--->",uploadedCoverImage);
+//  const filesArr = (req.files as Express.Multer.File[]) || [];
+//     const single = (req.file as Express.Multer.File) || undefined;
+//     const uploaded = filesArr.length ? filesArr : (single ? [single] : []);
 
- const filesArr = (req.files as Express.Multer.File[]) || [];
-    const single = (req.file as Express.Multer.File) || undefined;
-    const uploaded = filesArr.length ? filesArr : (single ? [single] : []);
+//     // Normalize body
+//     const body: any = req.body || {};
 
-    // Normalize body
-    const body: any = req.body || {};
+//     const baseUrl = `${req.protocol}://${req.get("host")}`;
+//     const uploadedUrls = uploaded.map(
+//       (f) => `${baseUrl}/uploads/${f.filename}`
+//     );
 
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
-    const uploadedUrls = uploaded.map(
-      (f) => `${baseUrl}/uploads/${f.filename}`
-    );
+//       const bodyImages: string[] = Array.isArray(body.image_multi)
+//       ? body.image_multi
+//       : (typeof body.image_multi === "string" && body.image_multi
+//           ? [body.image_multi]
+//           : []);
 
-      const bodyImages: string[] = Array.isArray(body.image_multi)
-      ? body.image_multi
-      : (typeof body.image_multi === "string" && body.image_multi
-          ? [body.image_multi]
-          : []);
+//     // Merge + clean (trim, dedupe, truthy only)
+//     const image_multi = Array.from(
+//       new Set([...bodyImages, ...uploadedUrls].map((s) => String(s).trim()).filter(Boolean))
+//     );
+// const payload = req.body
+// payload.images = image_multi
+// payload.coverImage=uploadedCoverImage
+// payload.user = req?.user?.userId
+//   try {
+//     const result = await PackageServices.addPackageIntoDB(payload);
 
-    // Merge + clean (trim, dedupe, truthy only)
-    const image_multi = Array.from(
-      new Set([...bodyImages, ...uploadedUrls].map((s) => String(s).trim()).filter(Boolean))
-    );
-const payload = req.body
-payload.images = image_multi
-payload.user = req?.user?.userId
+//     sendResponse(res, {
+//       success: true,
+//       message: 'Package Created Successfully',
+//       statusCode: httpStatus.CREATED,
+//       data: result,
+//     });
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
+const createPackage = async (req: Request, res: Response, next: NextFunction) => {
   try {
+    const files = req.files as {
+      [fieldname: string]: Express.Multer.File[];
+    };
+
+    // ✅ Make sure the files exist
+    console.log("req.files --->", files);
+
+    const coverImageFile = files?.coverImage?.[0];
+    const imageFiles = files?.image || [];
+
+    const uploadedCoverImage = coverImageFile
+      ? `${req.protocol}://${req.get("host")}/uploads/${coverImageFile.filename}`
+      : null;
+
+    const uploadedUrls = imageFiles.map(
+      (file) => `${req.protocol}://${req.get("host")}/uploads/${file.filename}`
+    );
+
+    const body = req.body || {};
+
+    const payload = {
+      ...body,
+      coverImage: uploadedCoverImage,
+      images: uploadedUrls,
+      user: req?.user?.userId,
+    };
+
+    console.log("Final payload --->", payload);
+
     const result = await PackageServices.addPackageIntoDB(payload);
 
-    sendResponse(res, {
+    res.status(201).json({
       success: true,
-      message: 'Package Created Successfully',
-      statusCode: httpStatus.CREATED,
+      message: "Package Created Successfully",
       data: result,
     });
-  } catch (err) {
-    next(err);
+  } catch (error) {
+    next(error);
   }
 };
+
 
 const deletePackage = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;

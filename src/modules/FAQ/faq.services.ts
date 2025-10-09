@@ -13,13 +13,13 @@ import { IFAQ } from './faq.interface';
 const getAllFAQFromDB = async (query: Record<string, unknown>) => {
   const queryBuilder = new QueryBuilder(FAQModel.find(), query);
   queryBuilder.search(['title', 'description']).filter().sort().paginate();
-  const result = await queryBuilder.modelQuery.populate('user');
+  const result = await queryBuilder.modelQuery;
   const meta = await queryBuilder.countTotal();
 
   return { meta, result };
 };
 const getSingleFAQFromDB = async (id: string) => {
-  const result = await FAQModel.findById(id).populate('user');
+  const result = await FAQModel.findById(id);
   return result;
 };
 
@@ -27,7 +27,7 @@ const getSingleFAQFromDB = async (id: string) => {
 const addFAQIntoDB = async (payload: IFAQ) => {
 
 
-  const result = (await FAQModel.create(payload)).populate('user');
+  const result = (await FAQModel.create(payload));
   return result;
 };
 const deleteFAQFromDB = async (id: string) => {
@@ -48,7 +48,7 @@ const updateFAQFromDB = async (id:string,payload:IFAQ)=>{
       { $set: payload },  
       { new: true, runValidators: true, context: "query" }
     )
-    .populate("user");
+
 
   if (!updated) {
     throw new AppError(httpStatus.NOT_FOUND, "FAQ not found!");

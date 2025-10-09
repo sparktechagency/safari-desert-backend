@@ -13,7 +13,7 @@ import { FaqControllers } from './faq.controller';
 const router = express.Router();
 
 router.post(
-  '/create-event',
+  '/create-faq',
 
   auth(
     USER_ROLE.superAdmin,
@@ -25,14 +25,14 @@ router.post(
 
 // router.get('/retrive/:userId',UserControllers.getSingleUser)
 
-router.get('/allEvents', FaqControllers.getAllFaq);
+router.get('/allFaq', FaqControllers.getAllFaq);
 
-router.get('/single-event/:id',FaqControllers.getSingleFAQ);
+router.get('/single-faq/:id',FaqControllers.getSingleFAQ);
 
 
-router.delete('/delete-event/:id',FaqControllers.deleteFaq);
-router.patch('/update-event/:id',
+router.delete('/delete-faq/:id',FaqControllers.deleteFaq);
+router.patch('/update-faq/:id',
   
     FaqControllers.editFaq);
 
-export const EventRoutes = router;
+export const FaqRoutes = router;

@@ -8,6 +8,7 @@ import privacyPolicyRouter from '../../modules/PrivacyPolicy/privacyPolicy.route
 import termsRouter from '../../modules/Terms/terms.route';
 import aboutRouter from '../../modules/about/about.route';
 import refundRouter from '../../modules/refundPolicy/refund.route';
+import { FaqRoutes } from '../../modules/FAQ/faq.routes';
 
 
 
@@ -49,6 +50,10 @@ const moduleRoutes = [
   {
     path: '/refund',
     route:refundRouter
+  },
+  {
+    path: '/faq',
+    route:FaqRoutes
   },
 
 ];

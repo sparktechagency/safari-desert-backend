@@ -22,58 +22,101 @@ class QueryBuilder<T> {
     return this;
   }
 
+
+
   // filter() {
 
-  //   const queryObj = { ...this.query };
-  //   const excludeFields = ['search', 'sort', 'limit', 'page', 'fields'];
-  //   excludeFields.forEach((el) => delete queryObj[el]);
+  //   const queryObj: Record<string, unknown> = { ...this.query };
+  //   const exclude = ['search', 'sort', 'limit', 'page', 'fields'];
+  //   exclude.forEach((k) => delete queryObj[k]);
 
-  //   const mongoQuery: Record<string, unknown> = {};
-  //   for (const [key, value] of Object.entries(queryObj)) {
-  //     if (typeof value === 'string') {
-  //       mongoQuery[key] = { $regex: new RegExp(`^${value}$`, 'i') };
+  //   const mongo: Record<string, unknown> = {};
+  //   for (const [key, raw] of Object.entries(queryObj)) {
+  //     if (raw == null) continue;
+  //     if (typeof raw === 'string') {
+      
+  //       if (/^(true|false)$/i.test(raw)) {
+  //         mongo[key] = /^true$/i.test(raw);
+  //         continue;
+  //       }
+     
+  //       mongo[key] = {
+  //         $regex: `^${raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
+  //         $options: 'i',
+  //       };
   //     } else {
-  //       mongoQuery[key] = value;
+  //       mongo[key] = raw;
   //     }
   //   }
 
-  //   this.modelQuery = this.modelQuery.find(mongoQuery as FilterQuery<T>);
+  //   this.modelQuery = this.modelQuery.find(mongo as FilterQuery<any>);
   //   return this;
   // }
 
-  filter() {
-    const queryObj: Record<string, unknown> = { ...this.query };
-    const exclude = ['search', 'sort', 'limit', 'page', 'fields'];
-    exclude.forEach((k) => delete queryObj[k]);
+filter() {
+  const queryObj: Record<string, unknown> = { ...this.query };
+  const exclude = ['search', 'sort', 'limit', 'page', 'fields'];
+  exclude.forEach((k) => delete queryObj[k]);
 
-    const mongo: Record<string, unknown> = {};
-    for (const [key, raw] of Object.entries(queryObj)) {
-      if (raw == null) continue;
-      if (typeof raw === 'string') {
-        // boolean normalize
-        if (/^(true|false)$/i.test(raw)) {
-          mongo[key] = /^true$/i.test(raw);
-          continue;
-        }
-        // objectId normalize (optional)
-        // if (key.toLowerCase().endsWith('id') && mongoose.isValidObjectId(raw)) {
-        //   mongo[key] = new mongoose.Types.ObjectId(raw);
-        //   continue;
-        // }
-        // default: case-insensitive exact string match
-        mongo[key] = {
-          $regex: `^${raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
-          $options: 'i',
-        };
-      } else {
-        mongo[key] = raw;
+  const mongo: Record<string, unknown> = {};
+
+  // Loop through all the query parameters
+  for (const [key, raw] of Object.entries(queryObj)) {
+    if (raw == null) continue;
+
+    // Special case for availability
+    if (key === 'availability') {
+      const date = typeof raw === 'string' ? raw : (raw as string[])[0];
+      if (date) {
+        // Use AND logic for all filters, availability uses $lte and $gte to check the date range
+        mongo['availability.start'] = { $lte: date };
+        mongo['availability.end'] = { $gte: date };
       }
+      continue;
     }
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    this.modelQuery = this.modelQuery.find(mongo as FilterQuery<any>);
-    return this;
+    // Handle max_adult and child_min_age logic as numbers and apply the required filters
+    if (key === 'max_adult' || key === 'child_min_age') {
+      if (typeof raw === 'string' && isNaN(Number(raw))) {
+        throw new Error(`Invalid value for ${key}. Expected a number, got "${raw}".`);
+      }
+
+      const value = Number(raw);
+
+      // Apply filter: max_adult should be greater than or equal to the passed value
+      if (key === 'max_adult') {
+        mongo[key] = { $gte: value }; // For max_adult: >= passedValue
+      } 
+
+      // Apply filter: child_min_age should be greater than or equal to the passed value
+      else if (key === 'child_min_age') {
+        mongo[key] = { $gte: value }; // For child_min_age: >= passedValue
+      }
+
+      continue;
+    }
+
+    // Handle other fields as strings or booleans
+    if (typeof raw === 'string') {
+      if (/^(true|false)$/i.test(raw)) {
+        mongo[key] = /^true$/i.test(raw);
+        continue;
+      }
+      mongo[key] = {
+        $regex: `^${raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
+        $options: 'i',
+      };
+    } else {
+      mongo[key] = raw;
+    }
   }
+
+  // Apply the filters as AND conditions
+  this.modelQuery = this.modelQuery.find(mongo as FilterQuery<any>);
+  return this;
+}
+
+
 
   // Sorting functionality
   sort() {

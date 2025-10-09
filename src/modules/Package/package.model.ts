@@ -10,6 +10,10 @@ const PriceSchema = new Schema<Price>(
   { _id: false } // don't create separate _id for Price subdocs
 );
 
+
+
+
+
 // Package schema
 const PackageSchema: Schema = new Schema<IPackage>(
   {
@@ -19,6 +23,7 @@ const PackageSchema: Schema = new Schema<IPackage>(
     required: [true, 'User reference is required'],
   },
     title: { type: String, required: true, trim: true },
+    coverImage: { type: String,required:true },
     images: { type: [String], default: [] },
     location: { type: String, required: true, trim: true },
     duration: { type: String, required: true },
@@ -26,7 +31,11 @@ const PackageSchema: Schema = new Schema<IPackage>(
     child_min_age: { type: Number, required: true, min: 0 },
 
     pickup: { type: String },
-    availability: { type: [String], default: [] },
+    availability: {
+      start: { type: String, required: true },
+      end: { type: String, required: true },
+
+    },
     activity: { type: [String], default: [] },
 
     adultPrice: { type: PriceSchema, required: true },
