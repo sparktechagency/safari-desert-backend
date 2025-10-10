@@ -45,9 +45,18 @@ const PackageSchema: Schema = new Schema<IPackage>(
     adultPrice: { type: PriceSchema, required: true },
     childPrice: { type: PriceSchema, required: true },
     single_sitter_dune_buggy: { type: PriceSchema},
+    dune_dashing: { type: PriceSchema},
     four_sitter_dune_buggy: { type: PriceSchema },
     quad_bike: { type: PriceSchema },
     camel_bike: { type: PriceSchema },
+    tea_cofee_soft_drinks: { type: PriceSchema },
+    hena_tattos: { type: PriceSchema },
+    fire_show: { type: PriceSchema },
+    arabic_costume: { type: PriceSchema },
+    shisha_smoking: { type: PriceSchema },
+     falcon_picture: { type: PriceSchema },
+    sand_boarding: { type: PriceSchema },
+    belly_dance: { type: PriceSchema },
 
     discount: { type: Number, min: 0, max: 100 },
 
@@ -59,6 +68,7 @@ const PackageSchema: Schema = new Schema<IPackage>(
     excluded: { type: [String], default: [] },
     tour_plan: { type: [String], default: [] },
     description: { type: String },
+    price:{type:PriceSchema}
   },
   {
     timestamps: true, // adds createdAt, updatedAt

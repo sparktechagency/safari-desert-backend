@@ -7,7 +7,7 @@ import { UserModel } from '../User/user.model';
 
 import httpStatus from 'http-status';
 import PackageModel from './package.model';
-import { IPackage } from './package.interface';
+import { IPackage, Price } from './package.interface';
 
 const getAllPackageFromDB = async (query: Record<string, unknown>) => {
   const queryBuilder = new QueryBuilder(PackageModel .find(), query);
@@ -23,17 +23,69 @@ const getSinglePackageFromDB = async (id: string) => {
 };
 ;
 
-const addPackageIntoDB = async (payload: IPackage) => {
-const mineId = payload.user
-  // console.log("services id",payload.serviceId);
+// const addPackageIntoDB = async (payload: IPackage) => {
+
+// const mineId = payload.user
+// console.log("payload---form--service--->",payload);
+//   // console.log("services id",payload.serviceId);
+//   const user = await UserModel.findById(mineId);
+//   if (!user) {
+//     throw new Error('User not found');
+//   }
+
+//   const result = (await PackageModel.create(payload)).populate('user');
+//   return result;
+// };
+
+export const addPackageIntoDB = async (payload: IPackage) => {
+  const mineId = payload.user;
+  console.log("payload---form--service--->", payload);
+
   const user = await UserModel.findById(mineId);
   if (!user) {
-    throw new Error('User not found');
+    throw new Error("User not found");
   }
 
-  const result = (await PackageModel.create(payload)).populate('user');
+  // List of optional service fields that may contain Price objects
+  const priceFields: (keyof IPackage)[] = [
+    "single_sitter_dune_buggy",
+    "four_sitter_dune_buggy",
+    "dune_dashing",
+    "quad_bike",
+    "camel_bike",
+    "tea_cofee_soft_drinks",
+    "hena_tattos",
+    "fire_show",
+    "arabic_costume",
+    "shisha_smoking",
+    "falcon_picture",
+    "sand_boarding",
+    "belly_dance",
+  ];
+
+  // Sum all available Price.amount values from payload
+  let totalAmount = 0;
+  for (const field of priceFields) {
+    const price = payload[field] as Price | undefined;
+    if (price && typeof price.amount === "number") {
+      totalAmount += price.amount;
+    }
+  }
+
+  // Set the total price (you can adjust currency logic as needed)
+  payload.price = {
+    amount: totalAmount,
+    currency: "AED", 
+  };
+
+  const result = (await PackageModel.create(payload)).populate("user");
   return result;
 };
+
+
+
+
+
 const deletePackageFromDB = async (id: string) => {
   const Package = await PackageModel.findByIdAndDelete(id);
 

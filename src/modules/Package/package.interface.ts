@@ -43,10 +43,19 @@ export interface IPackage extends Document {
 
   adultPrice: Price;
   childPrice: Price;
-  single_sitter_dune_buggy: Price;
-  four_sitter_dune_buggy: Price;
-  quad_bike: Price;
-  camel_bike: Price;
+  single_sitter_dune_buggy?: Price;
+  four_sitter_dune_buggy?: Price;
+  dune_dashing?:Price;
+  quad_bike?: Price;
+  camel_bike?: Price;
+  tea_cofee_soft_drinks?: Price;
+  hena_tattos?: Price;
+  fire_show?: Price;
+  arabic_costume?: Price;
+  shisha_smoking?: Price;
+  falcon_picture?:Price;
+  sand_boarding:Price;
+  belly_dance:Price
 
   discount?: number;
 
@@ -58,4 +67,5 @@ export interface IPackage extends Document {
   excluded?: string[];
   tour_plan?: string[];
   description?: string;
+  price:Price
 }

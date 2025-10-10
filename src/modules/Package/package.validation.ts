@@ -68,9 +68,18 @@ export const createPackage = z
             adultPrice: priceZ,
             childPrice: priceZ,
             single_sitter_dune_buggy: priceZ.optional(),
+            dune_dashing: priceZ.optional(),
             four_sitter_dune_buggy: priceZ.optional(),
             quad_bike: priceZ.optional(),
+           tea_cofee_soft_drinks: priceZ.optional(),
             camel_bike: priceZ.optional(),
+            hena_tattos: priceZ.optional(),
+            fire_show: priceZ.optional(),
+            arabic_costume: priceZ.optional(),
+            shisha_smoking: priceZ.optional(),
+             falcon_picture: priceZ.optional(),
+             sand_boarding: priceZ.optional(),
+             belly_dance: priceZ.optional(),
         
             discount: z.number().min(0).max(100).optional(),
         
