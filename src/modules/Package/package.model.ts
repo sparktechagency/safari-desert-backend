@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { IPackage, Price } from "./package.interface";
+import { Activity, IPackage, Price } from "./package.interface";
 
 // Price sub-schema
 const PriceSchema = new Schema<Price>(
@@ -36,14 +36,18 @@ const PackageSchema: Schema = new Schema<IPackage>(
       end: { type: String, required: true },
 
     },
-    activity: { type: [String], default: [] },
+     activity: {
+    type: [String],
+    enum: Object.values(Activity),
+    default: [],
+  },
 
     adultPrice: { type: PriceSchema, required: true },
     childPrice: { type: PriceSchema, required: true },
-    single_sitter_dune_buggy: { type: PriceSchema, required: true },
-    four_sitter_dune_buggy: { type: PriceSchema, required: true },
-    quad_bike: { type: PriceSchema, required: true },
-    camel_bike: { type: PriceSchema, required: true },
+    single_sitter_dune_buggy: { type: PriceSchema},
+    four_sitter_dune_buggy: { type: PriceSchema },
+    quad_bike: { type: PriceSchema },
+    camel_bike: { type: PriceSchema },
 
     discount: { type: Number, min: 0, max: 100 },
 

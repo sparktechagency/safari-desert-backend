@@ -1,5 +1,6 @@
 // zod/package.schema.ts
 import { z } from "zod";
+import { Activity } from "./package.interface";
 
 /** Simple ObjectId validator (24 hex chars). */
 export const objectIdZ = z
@@ -59,14 +60,17 @@ export const createPackage = z
         
             pickup: z.string().trim().optional(),
             availability: availabilityZ,
-            activity: stringArrayZ,
+             activity: z
+    .array(z.nativeEnum(Activity))
+    .default([])
+    .refine((val) => val.length > 0, "At least one activity required"),
         
             adultPrice: priceZ,
             childPrice: priceZ,
-            single_sitter_dune_buggy: priceZ,
-            four_sitter_dune_buggy: priceZ,
-            quad_bike: priceZ,
-            camel_bike: priceZ,
+            single_sitter_dune_buggy: priceZ.optional(),
+            four_sitter_dune_buggy: priceZ.optional(),
+            quad_bike: priceZ.optional(),
+            camel_bike: priceZ.optional(),
         
             discount: z.number().min(0).max(100).optional(),
         

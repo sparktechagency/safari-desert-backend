@@ -9,6 +9,23 @@ export interface Availability {
   start: string;
   end: string;
 }
+// src/types/activity.ts
+
+export enum Activity {
+  DUNE_BASHING = "Dune Bashing",
+  CAMEL_RIDE = "Camel Ride",
+  QUAD_BIKING = "Quad Biking",
+  DUNE_BUGGY_RIDE = "Dune Buggy Ride",
+  TEA_COFFEE_SOFT_DRINKS = "Tea, Coffee, & Soft Drinks",
+  HENNA_TATTOOS = "Henna Tattoos",
+  FIRE_SHOW = "Fire Show in the Desert",
+  ARABIC_COSTUMES = "Arabic Costumes",
+  SHISHA_SMOKING = "Shisha Smoking",
+  FALCON_PICTURES = "Falcon To Take Pictures",
+  SAND_BOARDING = "Sand-Boarding",
+  BELLY_DANCE_SHOW = "Belly Dance Show",
+}
+
 // Main Package interface extending Mongoose Document
 export interface IPackage extends Document {
      user: mongoose.Types.ObjectId;
@@ -22,7 +39,7 @@ export interface IPackage extends Document {
 
   pickup?: string;
   availability:Availability;
-  activity?: string[];
+  activity?: Activity[];
 
   adultPrice: Price;
   childPrice: Price;
