@@ -46,7 +46,7 @@ export const addPackageIntoDB = async (payload: IPackage) => {
     throw new Error("User not found");
   }
 
-  // List of optional service fields that may contain Price objects
+  // All service fields that can have a Price
   const priceFields: (keyof IPackage)[] = [
     "single_sitter_dune_buggy",
     "four_sitter_dune_buggy",
@@ -63,25 +63,34 @@ export const addPackageIntoDB = async (payload: IPackage) => {
     "belly_dance",
   ];
 
-  // Sum all available Price.amount values from payload
+  // --- Calculate total amount ---
   let totalAmount = 0;
   for (const field of priceFields) {
     const price = payload[field] as Price | undefined;
-    if (price && typeof price.amount === "number") {
+    if (price?.amount && typeof price.amount === "number") {
       totalAmount += price.amount;
     }
   }
 
-  // Set the total price (you can adjust currency logic as needed)
-  payload.price = {
+  // --- Base total price ---
+  payload.original_price = {
     amount: totalAmount,
-    currency: "AED", 
+    currency: "AED", // adjust or derive dynamically if needed
   };
 
+  // --- Apply discount if exists ---
+  if (payload.discount && payload.discount > 0) {
+    const discountPercentage = Math.min(payload.discount, 100); // cap at 100%
+    const discountedAmount = totalAmount - (totalAmount * discountPercentage) / 100;
+
+    payload.discount_price = {
+      amount: parseFloat(discountedAmount.toFixed(2)),
+      currency: "AED",
+    };
+  } 
   const result = (await PackageModel.create(payload)).populate("user");
   return result;
 };
-
 
 
 

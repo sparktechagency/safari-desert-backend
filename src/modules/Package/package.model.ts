@@ -68,7 +68,8 @@ const PackageSchema: Schema = new Schema<IPackage>(
     excluded: { type: [String], default: [] },
     tour_plan: { type: [String], default: [] },
     description: { type: String },
-    price:{type:PriceSchema}
+    original_price:{type:PriceSchema},
+     discount_price:{type:PriceSchema}
   },
   {
     timestamps: true, // adds createdAt, updatedAt

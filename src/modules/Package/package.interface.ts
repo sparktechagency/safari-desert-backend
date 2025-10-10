@@ -67,5 +67,6 @@ export interface IPackage extends Document {
   excluded?: string[];
   tour_plan?: string[];
   description?: string;
-  price:Price
+  original_price:Price
+  discount_price?:Price
 }
