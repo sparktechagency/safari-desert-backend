@@ -9,6 +9,7 @@ import termsRouter from '../../modules/Terms/terms.route';
 import aboutRouter from '../../modules/about/about.route';
 import refundRouter from '../../modules/refundPolicy/refund.route';
 import { FaqRoutes } from '../../modules/FAQ/faq.routes';
+import { BookingRoutes } from '../../modules/booking/booking.routes';
 
 
 
@@ -54,6 +55,10 @@ const moduleRoutes = [
   {
     path: '/faq',
     route:FaqRoutes
+  },
+  {
+    path: '/booking',
+    route:BookingRoutes
   },
 
 ];
