@@ -35,7 +35,7 @@ export interface Booking {
   tour_options: SelectedTourOption[];
 
   pricing: Pricing;
-
+payment_status:string;
   // personal info
   customer_name?: string;
   customer_email?: string;

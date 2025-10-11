@@ -38,8 +38,7 @@ export interface IBooking extends Document {
   customer_phone?: string;
   customer_country?: string;
   pickup_location?: string;
-  createdAt?: Date;
-  updatedAt?: Date;
+ payment_status:string
 }
 
 const AvailabilitySchema = new Schema<IAvailability>({
@@ -81,6 +80,7 @@ const BookingSchema = new Schema<IBooking>(
     customer_phone: { type: String },
     customer_country: { type: String },
     pickup_location: { type: String },
+    payment_status:{type:String}
   },
   { timestamps: true }
 );
