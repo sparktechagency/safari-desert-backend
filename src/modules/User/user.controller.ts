@@ -51,9 +51,22 @@ const getDashboardStats = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 });
+const getMyProfile = catchAsync(async (req: Request, res: Response) => {
+
+const meId = req?.user?.userId
+  const result = await UserServices.getMyProfileFromDB(meId);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'My Profile retrive successfully!',
+    data: result,
+  });
+});
 
 export const UserControllers = {
 
   updateProfile,
-getDashboardStats
+getDashboardStats,
+getMyProfile
 };

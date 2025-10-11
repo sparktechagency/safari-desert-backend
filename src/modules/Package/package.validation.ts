@@ -67,6 +67,7 @@ export const createPackage = z
         
             adultPrice: priceZ,
             childPrice: priceZ,
+            dune_buggy_ride: priceZ.optional(),
             single_sitter_dune_buggy: priceZ.optional(),
             dune_dashing: priceZ.optional(),
             four_sitter_dune_buggy: priceZ.optional(),

@@ -45,6 +45,12 @@ router.patch(
   validateRequest(editProfileSchema),
   UserControllers.updateProfile,
 );
+router.get(
+  '/my-profile',
+ 
+  auth(USER_ROLE.superAdmin),
+  UserControllers.getMyProfile,
+);
 
 
 

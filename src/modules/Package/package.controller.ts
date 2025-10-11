@@ -198,11 +198,11 @@ const initiateOrderPayment = catchAsync(async (req: Request, res: Response) => {
 
   const Package = await PackageModel.findById(id);
   if (!Package) {
-    throw new AppError(httpStatus.BAD_REQUEST, 'Service not found.');
+    throw new AppError(httpStatus.BAD_REQUEST, 'Package not found.');
   }
 // console.log("package->",Package);
   // currency
-  const currency = String(item.currency || 'USD').toUpperCase();
+  const currency = String(item.currency || 'AED').toUpperCase();
   if (!['USD', 'AED'].includes(currency)) {
     throw new AppError(httpStatus.BAD_REQUEST, 'Unsupported currency.');
   }

@@ -23,20 +23,6 @@ const getSinglePackageFromDB = async (id: string) => {
 };
 ;
 
-// const addPackageIntoDB = async (payload: IPackage) => {
-
-// const mineId = payload.user
-// console.log("payload---form--service--->",payload);
-//   // console.log("services id",payload.serviceId);
-//   const user = await UserModel.findById(mineId);
-//   if (!user) {
-//     throw new Error('User not found');
-//   }
-
-//   const result = (await PackageModel.create(payload)).populate('user');
-//   return result;
-// };
-
 export const addPackageIntoDB = async (payload: IPackage) => {
   const mineId = payload.user;
   console.log("payload---form--service--->", payload);
@@ -88,6 +74,32 @@ export const addPackageIntoDB = async (payload: IPackage) => {
       currency: "AED",
     };
   } 
+
+
+
+
+    // --- Collect all existing service fields into tour_options[] ---
+  const tourOptions: {
+    name: string;
+    amount: number;
+    currency: string;
+    quantity:number;
+  }[] = [];
+
+  for (const field of priceFields) {
+    const price = payload[field] as Price | undefined;
+    if (price?.amount && typeof price.amount === "number") {
+      tourOptions.push({
+        name: field,
+        amount: price.amount,
+        currency: price.currency || "AED",
+        quantity:1
+      });
+    }
+  }
+
+  // --- Attach the array to payload ---
+  payload.tour_options = tourOptions;
   const result = (await PackageModel.create(payload)).populate("user");
   return result;
 };

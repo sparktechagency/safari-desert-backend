@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { Activity, IPackage, Price } from "./package.interface";
+import { Activity, IPackage, ITourOption, Price } from "./package.interface";
 
 // Price sub-schema
 const PriceSchema = new Schema<Price>(
@@ -12,7 +12,12 @@ const PriceSchema = new Schema<Price>(
 
 
 
-
+const TourOptionSchema = new Schema<ITourOption>({
+  name: { type: String, required: true },
+  amount: { type: Number, required: true },
+  quantity: { type: Number, required: true },
+  currency: { type: String, required: true, default: "AED" },
+});
 
 // Package schema
 const PackageSchema: Schema = new Schema<IPackage>(
@@ -44,6 +49,7 @@ const PackageSchema: Schema = new Schema<IPackage>(
 
     adultPrice: { type: PriceSchema, required: true },
     childPrice: { type: PriceSchema, required: true },
+    dune_buggy_ride: { type: PriceSchema},
     single_sitter_dune_buggy: { type: PriceSchema},
     dune_dashing: { type: PriceSchema},
     four_sitter_dune_buggy: { type: PriceSchema },
@@ -57,7 +63,7 @@ const PackageSchema: Schema = new Schema<IPackage>(
      falcon_picture: { type: PriceSchema },
     sand_boarding: { type: PriceSchema },
     belly_dance: { type: PriceSchema },
-
+  tour_options: [TourOptionSchema],
     discount: { type: Number, min: 0, max: 100 },
 
     drop_off: { type: String },

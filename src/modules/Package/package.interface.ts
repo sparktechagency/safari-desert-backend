@@ -1,5 +1,14 @@
 import  mongoose, { Document} from 'mongoose';
 
+
+
+export interface ITourOption {
+  name: string;
+  amount: number;
+  quantity:number
+  currency: string;
+} 
+
 // Price sub-document interface
 export interface Price {
   amount: number;
@@ -16,6 +25,8 @@ export enum Activity {
   CAMEL_RIDE = "Camel Ride",
   QUAD_BIKING = "Quad Biking",
   DUNE_BUGGY_RIDE = "Dune Buggy Ride",
+  SINGLE_SITTER_DUNE_BUGGY_RIDE = "Single Sitter Dune Buggy Ride",
+  FOUR_SITTER_DUNE_BUGGY_RIDE = "4 Sitter Dune Buggy Ride",
   TEA_COFFEE_SOFT_DRINKS = "Tea, Coffee, & Soft Drinks",
   HENNA_TATTOOS = "Henna Tattoos",
   FIRE_SHOW = "Fire Show in the Desert",
@@ -36,13 +47,14 @@ export interface IPackage extends Document {
   duration: string;
   max_adult: number;
   child_min_age: number;
-
+  tour_options: ITourOption[];
   pickup?: string;
   availability:Availability;
   activity?: Activity[];
 
   adultPrice: Price;
   childPrice: Price;
+  dune_buggy_ride?: Price;
   single_sitter_dune_buggy?: Price;
   four_sitter_dune_buggy?: Price;
   dune_dashing?:Price;

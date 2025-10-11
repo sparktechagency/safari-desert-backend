@@ -12,6 +12,11 @@ const updateProfileFromDB = async (id: string, payload: TEditProfile) => {
 
   return result;
 };
+const getMyProfileFromDB = async (id: string, ) => {
+  const result = await UserModel.findById(id);
+
+  return result;
+};
 
 const getDashboardStatsFromDB = async () => {
   return "Dashboard metadata will be available once the server is live."
@@ -51,5 +56,6 @@ const getDashboardStatsFromDB = async () => {
 
 export const UserServices = {
   updateProfileFromDB,
-  getDashboardStatsFromDB
+  getDashboardStatsFromDB,
+  getMyProfileFromDB
 };
