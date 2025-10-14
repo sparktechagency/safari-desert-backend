@@ -33,6 +33,7 @@ app.use(
       'http://10.10.20.13:3000',
       'http://localhost:5173',
       'http://localhost:5174',
+      'https://smith-williums-web.vercel.app'
     ],
      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
