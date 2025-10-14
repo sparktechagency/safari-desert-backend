@@ -7,7 +7,8 @@ import { UserModel } from '../User/user.model';
 
 import httpStatus from 'http-status';
 import PackageModel from './package.model';
-import { IPackage, Price } from './package.interface';
+import { IPackage, Price, TReview } from './package.interface';
+import mongoose, { Types } from 'mongoose';
 
 const getAllPackageFromDB = async (query: Record<string, unknown>) => {
   const queryBuilder = new QueryBuilder(PackageModel .find(), query);
@@ -135,6 +136,48 @@ const updatePackageFromDB = async (id:string,payload:IPackage)=>{
   
 }
 
+
+
+
+
+
+export const addReviewIntoDB = async (payload: TReview) => {
+  const { package_id, user_name, rating, message } = payload;
+
+  // ...validate package_id, ensure package exists...
+
+  const reviewDoc = {
+    user_name,
+    package_id,      // <-- add this because your schema requires it
+    rating,
+    message,
+  };
+
+  const updated = await PackageModel.findByIdAndUpdate(
+    package_id,
+    { $push: { review: reviewDoc } },
+    { new: true, runValidators: true }
+  );
+
+  if (!updated) throw new AppError(httpStatus.INTERNAL_SERVER_ERROR, 'Failed to add review');
+  return updated;
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 export const PackageServices = {
- getAllPackageFromDB,getSinglePackageFromDB,addPackageIntoDB,deletePackageFromDB,updatePackageFromDB
+ getAllPackageFromDB,getSinglePackageFromDB,addPackageIntoDB,deletePackageFromDB,updatePackageFromDB,addReviewIntoDB
 };

@@ -36,7 +36,12 @@ export enum Activity {
   SAND_BOARDING = "Sand-Boarding",
   BELLY_DANCE_SHOW = "Belly Dance Show",
 }
-
+export type TReview ={
+  user_name:string; 
+  package_id: mongoose.Types.ObjectId; 
+  rating: number;           
+  message?: string;    
+}
 // Main Package interface extending Mongoose Document
 export interface IPackage extends Document {
      user: mongoose.Types.ObjectId;
@@ -51,7 +56,7 @@ export interface IPackage extends Document {
   pickup?: string;
   availability:Availability;
   activity?: Activity[];
-
+review:TReview[];
   adultPrice: Price;
   childPrice: Price;
   dune_buggy_ride?: Price;

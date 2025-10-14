@@ -253,7 +253,37 @@ const initiateOrderPayment = catchAsync(async (req: Request, res: Response) => {
 
 
 
+// const getAllReview = catchAsync(async(req:Request,res:Response)=>{
+//  const packageId = req?.params?.id
+//   const result = await PackageServices.getAllReviewFromDB(packageId);
+//   sendResponse(res, {
+//       statusCode: httpStatus.OK,
+//       success: true,
+//       message: 'Review retrived succesfully!',
+//       data: result,
+//     });
 
+// })
+
+const createReview = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+//   console.log("create revieew-->",req.body);
+  try {
+    const result = await PackageServices.addReviewIntoDB(req.body);
+
+    sendResponse(res, {
+      success: true,
+      message: 'Review Sent Successfull',
+      statusCode: httpStatus.CREATED,
+      data: result,
+    });
+  } catch (err) {
+    next(err);
+  }
+};
 
 
 
@@ -263,5 +293,5 @@ const initiateOrderPayment = catchAsync(async (req: Request, res: Response) => {
 
 
 export const PackageControllers = {
-deletePackage,createPackage,getAllPackage,getSinglePackage,updatePackage,initiateOrderPayment
+deletePackage,createPackage,getAllPackage,getSinglePackage,updatePackage,initiateOrderPayment,createReview
 };

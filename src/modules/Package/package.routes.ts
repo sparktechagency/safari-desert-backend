@@ -72,6 +72,12 @@ router.patch('/update-package/:id',
 
 router.post('/checkout',PackageControllers.initiateOrderPayment)
 
+router.post('/addReview',
 
+  PackageControllers.createReview,
+
+);
+
+// router.get('/allReview/:id',PackageControllers.getAllReview)
 
 export const PackageRoutes = router;

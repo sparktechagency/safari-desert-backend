@@ -1,5 +1,5 @@
 import mongoose, { Schema } from "mongoose";
-import { Activity, IPackage, ITourOption, Price } from "./package.interface";
+import { Activity, IPackage, ITourOption, Price, TReview } from "./package.interface";
 
 // Price sub-schema
 const PriceSchema = new Schema<Price>(
@@ -10,7 +10,31 @@ const PriceSchema = new Schema<Price>(
   { _id: false } // don't create separate _id for Price subdocs
 );
 
-
+const ReviewSchema: Schema = new Schema<TReview>({
+  user_name: { 
+    type:String,required:true 
+  },
+package_id: { 
+    type: mongoose.Schema.Types.ObjectId, 
+    ref: 'Package', 
+    required: [true, 'Package reference is required'] 
+  },
+  
+  rating: { 
+    type: Number, 
+    required: [true, 'Rating is required'], 
+    min: [1, 'Rating must be at least 1'], 
+    max: [5, 'Rating cannot be more than 5'] 
+  },
+  message: { 
+    type: String, 
+    maxlength: [500, 'Comment cannot exceed 500 characters']
+  },
+},
+ {
+    timestamps: true, // Automatically create createdAt and updatedAt fields
+  },
+);
 
 const TourOptionSchema = new Schema<ITourOption>({
   name: { type: String, required: true },
@@ -65,7 +89,7 @@ const PackageSchema: Schema = new Schema<IPackage>(
     belly_dance: { type: PriceSchema },
   tour_options: [TourOptionSchema],
     discount: { type: Number, min: 0, max: 100 },
-
+review: { type: [ReviewSchema], default: [] },
     drop_off: { type: String },
     note: { type: String, trim: true },
     refund_policy: { type: String },
