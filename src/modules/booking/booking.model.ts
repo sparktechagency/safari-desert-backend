@@ -21,6 +21,7 @@ export interface IPricing {
 }
 
 export interface IBooking extends Document {
+    bookingId:String
   title: string;
   images: string[];
   location: string;
@@ -39,6 +40,7 @@ export interface IBooking extends Document {
   customer_country?: string;
   pickup_location?: string;
  payment_status:string
+ stripe_sessionId:string;
 }
 
 const AvailabilitySchema = new Schema<IAvailability>({
@@ -63,6 +65,7 @@ const PricingSchema = new Schema<IPricing>({
 
 const BookingSchema = new Schema<IBooking>(
   {
+    bookingId:{type:String,required:true},
     title: { type: String, required: true },
     images: { type: [String], default: [] },
     location: { type: String, required: true },
@@ -74,13 +77,14 @@ const BookingSchema = new Schema<IBooking>(
     children: { type: Number, default: 0 },
     currency: { type: String, default: "AED" },
     tour_options: { type: [SelectedTourOptionSchema], default: [] },
+    stripe_sessionId:{type:String,required:true},
     pricing: { type: PricingSchema, required: true },
     customer_name: { type: String },
     customer_email: { type: String },
     customer_phone: { type: String },
     customer_country: { type: String },
     pickup_location: { type: String },
-    payment_status:{type:String}
+    payment_status:{type:String,required:true}
   },
   { timestamps: true }
 );

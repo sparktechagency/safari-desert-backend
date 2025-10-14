@@ -20,7 +20,7 @@ export interface Pricing {
 }
 
 export interface Booking {
-  _id?: string;
+  bookingId?: string;
   title: string;
   images: string[];
   location: string;
@@ -33,7 +33,7 @@ export interface Booking {
   children: number;
   currency: string;
   tour_options: SelectedTourOption[];
-
+stripe_sessionId:string;
   pricing: Pricing;
 payment_status:string;
   // personal info
