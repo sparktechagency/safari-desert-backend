@@ -60,7 +60,7 @@ router.delete("/delete-package/:id", PackageControllers.deletePackage);
 router.patch('/update-package/:id',
       upload.array("images"),
   (req: Request, res: Response, next: NextFunction) => {
-    // console.log("req data--->",req.body.data);
+    // console.log("req data--->",req.body.data);;
     if (req.body.data) {
       req.body = JSON.parse(req.body.data);
     }
