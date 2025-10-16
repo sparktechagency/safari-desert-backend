@@ -5,15 +5,6 @@ import httpStatus from 'http-status';
 import config from '../../app/config';
 import AppError from '../../errors/AppError';
 
-// Define a type for the mail options
-interface MailOptions {
-  from: string;
-  to: string;
-  subject: string;
-  text: string;
-}
-
-// Controller function to handle sending message
 const sendMessage = async (req: Request, res: Response): Promise<void> => {
   try {
     const { name, email, message } = req.body;
@@ -30,16 +21,25 @@ const sendMessage = async (req: Request, res: Response): Promise<void> => {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
-        user: config.SMTP_USER,
+        user: config.SMTP_USER, // your app's email (sender)
         pass: config.SMTP_PASS,
       },
     });
 
     const mailOptions: SendMailOptions = {
-      from: email,
-      to: process.env.CONTACT_RECEIVER_EMAIL || config.SMTP_USER,
+      from: `"${name}" <${config.SMTP_USER}>`, // mail appears from your Gmail but shows user's name
+      to: process.env.CONTACT_RECEIVER_EMAIL || config.SMTP_USER, // ✅ your receiving email
       subject: `New message from ${name}`,
-      text: `From: ${name} <${email}>\n\n${message}`,
+      text: `
+You received a new message from your website contact form:
+
+Name: ${name}
+Email: ${email}
+
+Message:
+${message}
+      `,
+      replyTo: email, // ✅ allows you to click "Reply" to email the client directly
     };
 
     const info: SentMessageInfo = await transporter.sendMail(mailOptions);
