@@ -235,7 +235,7 @@ const initiateOrderPayment = catchAsync(async (req: Request, res: Response) => {
 
     client_reference_id: String(id),
 
-    success_url: `${baseUrl}/success?session_id={CHECKOUT_SESSION_ID}`,
+    success_url: `${baseUrl}/en/success?session_id={CHECKOUT_SESSION_ID}`,
     cancel_url: `${baseUrl}/cancel`,
     metadata: {
       bookProcessId: String(id),

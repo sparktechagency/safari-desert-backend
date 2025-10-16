@@ -10,6 +10,7 @@ import aboutRouter from '../../modules/about/about.route';
 import refundRouter from '../../modules/refundPolicy/refund.route';
 import { FaqRoutes } from '../../modules/FAQ/faq.routes';
 import { BookingRoutes } from '../../modules/booking/booking.routes';
+import { ContactRoutes } from '../../modules/ContactUs/contact.route';
 
 
 
@@ -59,6 +60,10 @@ const moduleRoutes = [
   {
     path: '/booking',
     route:BookingRoutes
+  },
+  {
+    path: '/contact',
+    route:ContactRoutes
   },
 
 ];
