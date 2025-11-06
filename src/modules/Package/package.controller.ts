@@ -259,7 +259,7 @@ const initiateOrderPayment = catchAsync(async (req: Request, res: Response) => {
 //   sendResponse(res, {
 //       statusCode: httpStatus.OK,
 //       success: true,
-//       message: 'Review retrived succesfully!',
+//       message: 'Review retrived succesfully!',,
 //       data: result,
 //     });
 
