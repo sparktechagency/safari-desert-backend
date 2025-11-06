@@ -26,7 +26,6 @@ app.use('/uploads', express.static(path.join(__dirname, '../uploads')));
 app.use(
   cors({
     origin: [
-    
       'http://localhost:3000',
       'http://localhost:3001',
       'http://10.10.20.13:5000',
@@ -35,7 +34,7 @@ app.use(
       'http://localhost:5174',
       'https://smith-williums-web.vercel.app',
       'https://desert-safari-dashboard.vercel.app',
-        'https://dashboard.desertlaila.com',
+      'https://dashboard.desertlaila.com',
       'https://desertlaila.com'
 
     ],
