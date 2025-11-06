@@ -19,7 +19,7 @@ const getMyProfileFromDB = async (id: string, ) => {
 };
 
 const getDashboardStatsFromDB = async () => {
-  return "Dashboard metadata will be available once the server is live."
+
   const users = await UserModel.find();
 
   // total user count
@@ -49,7 +49,7 @@ const getDashboardStatsFromDB = async () => {
     ...stats,
   };
 
-  // console.log("Dashboard Stats ---->", finalStats);
+  // console.log("Dashboard Stats ---->", finalStats);;
   return finalStats;
 };
 
