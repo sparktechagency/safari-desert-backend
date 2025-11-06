@@ -37,7 +37,7 @@ const deleteFAQFromDB = async (id: string) => {
     throw new AppError(httpStatus.NOT_FOUND, 'FAQ not found!');
   }
 
-  return event; // return deleted user if needed
+  return event; // return deleted user if neededd
 };
 
 const updateFAQFromDB = async (id:string,payload:IFAQ)=>{
