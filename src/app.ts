@@ -35,7 +35,8 @@ app.use(
       'https://smith-williums-web.vercel.app',
       'https://desert-safari-dashboard.vercel.app',
       'https://dashboard.desertlaila.com',
-      'https://desertlaila.com'
+      'https://desertlaila.com',
+      'https://www.desertlaila.com'
 
     ],
      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
