@@ -41,8 +41,8 @@ const updateProfile = catchAsync(async (req: Request, res: Response) => {
 
 const getDashboardStats = catchAsync(async (req: Request, res: Response) => {
 
-
-  const result = await UserServices.getDashboardStatsFromDB();
+const {year} = req.params
+  const result = await UserServices.getDashboardStatsFromDB(Number(year)); 
 
   sendResponse(res, {
     statusCode: httpStatus.OK,

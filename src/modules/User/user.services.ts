@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
+import bookingModel from "../booking/booking.model";
 import { TEditProfile } from "./user.constant";
 
 import { UserModel } from "./user.model";
@@ -18,39 +19,35 @@ const getMyProfileFromDB = async (id: string, ) => {
   return result;
 };
 
-const getDashboardStatsFromDB = async () => {
-
-  const users = await UserModel.find();
-
-  // total user count
-  const totalUsers = users.length;
-
-  // role-wise stats
-  const stats = users.reduce(
-    (acc, user) => {
-      if (user.role === "user") acc.totalClient++;
-      if (user.role === "contractor") acc.totalContractor++;
-      if (user.role === "vipContractor") acc.totalVipContractor++;
-      if (user.role === "vipMember") acc.totalVipMember++;
-      if (user.role === "admin") acc.totalAdmin++;
-      return acc;
+const getDashboardStatsFromDB = async (year: number) => {
+  const bookings = await bookingModel.find({
+    createdAt: {
+      $gte: new Date(`${year}-01-01T00:00:00Z`),
+      $lte: new Date(`${year}-12-31T23:59:59Z`),
     },
-    {
-      totalClient: 0,
-      totalContractor: 0,
-      totalVipContractor: 0,
-      totalVipMember: 0,
-      totalAdmin: 0,
-    }
-  );
+  });
 
-  const finalStats = {
-    totalUsers,
-    ...stats,
-  };
+  const totalBookings = bookings.length;
 
-  // console.log("Dashboard Stats ---->", finalStats);;
-  return finalStats;
+  // Initialize month counts
+  const monthlyCounts = Array(12).fill(0);
+
+  // Count bookings by month
+  bookings.forEach((b) => {
+    const month = new Date(b.createdAt).getMonth(); // 0–11
+    monthlyCounts[month]++;
+  });
+
+  // Format for frontend graph (Jan–Dec)
+  const monthlyData = [
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
+  ].map((label, index) => ({
+    month: label,
+    total: monthlyCounts[index],
+  }));
+
+  return { totalBookings, monthlyData };
 };
 
 

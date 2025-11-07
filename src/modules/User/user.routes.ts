@@ -54,6 +54,6 @@ router.get(
 
 
 
-router.get('/dashboard/stats', UserControllers.getDashboardStats);
+router.get('/dashboard/stats/:year', UserControllers.getDashboardStats);
 
 export const UserRoutes = router;
