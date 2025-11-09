@@ -33,6 +33,7 @@ export interface IBooking extends Document {
   children: number;
   currency: string;
   tour_options: ISelectedTourOption[];
+  transfer_option:string;
   pricing: IPricing;
   customer_name?: string;
   customer_email?: string;
@@ -77,6 +78,7 @@ const BookingSchema = new Schema<IBooking>(
     children: { type: Number, default: 0 },
     currency: { type: String, default: "AED" },
     tour_options: { type: [SelectedTourOptionSchema], default: [] },
+         transfer_option: { type: String, required: true },
     stripe_sessionId:{type:String,required:true},
     pricing: { type: PricingSchema, required: true },
     customer_name: { type: String },
