@@ -33,7 +33,7 @@ export interface Booking {
   children: number;
   currency: string;
   tour_options: SelectedTourOption[];
-transfer_option:string;
+transfer_option:string; //
 stripe_sessionId:string;
   pricing: Pricing;
 payment_status:string;
