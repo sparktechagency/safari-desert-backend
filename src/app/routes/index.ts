@@ -11,6 +11,7 @@ import refundRouter from '../../modules/refundPolicy/refund.route';
 import { FaqRoutes } from '../../modules/FAQ/faq.routes';
 import { BookingRoutes } from '../../modules/booking/booking.routes';
 import { ContactRoutes } from '../../modules/ContactUs/contact.route';
+import { TransferRoutes } from '../../modules/transferOption/transferOption.routes';
 
 
 
@@ -64,6 +65,10 @@ const moduleRoutes = [
   {
     path: '/contact',
     route:ContactRoutes
+  },
+  {
+    path: '/transferOption',
+    route:TransferRoutes
   },
 
 ];

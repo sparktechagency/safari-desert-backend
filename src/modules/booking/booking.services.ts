@@ -1,7 +1,7 @@
 // import AppError from '../../errors/AppError';
 
 import QueryBuilder from '../../app/builder/QueryBuilder';
-import bookingModel, { IBooking } from './booking.model';
+import bookingModel, { IBooking, ITransferOption } from './booking.model';
 
 
 
@@ -20,11 +20,10 @@ const getSingleBookingFromDB = async (id: string) => {
 
 
 const addBookingIntoDB = async (payload: IBooking) => {
-
-
   const result = (await bookingModel.create(payload));
   return result;
 };
+
 
 
 

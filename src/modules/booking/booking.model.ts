@@ -19,6 +19,10 @@ export interface IPricing {
   additional_price: number;
   grand_total: number;
 }
+export interface ITransferOption {
+  transfer_option: string;
+  
+}
 
 export interface IBooking extends Document {
     bookingId:String
