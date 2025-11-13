@@ -35,7 +35,7 @@ app.use(
       'http://localhost:5174',
       'https://smith-williums-web.vercel.app',
       'https://desert-safari-dashboard.vercel.app',
-      'hhttps://dashboard.desertlaila.com',
+      'https://dashboard.desertlaila.com',
       'https://desertlaila.com',
       'https://www.desertlaila.com',
       'https://backend.desertlaila.com',
