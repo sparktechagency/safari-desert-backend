@@ -35,10 +35,12 @@ app.use(
       'http://localhost:5174',
       'https://smith-williums-web.vercel.app',
       'https://desert-safari-dashboard.vercel.app',
-      'https://dashboard.desertlaila.com',
+      'hhttps://dashboard.desertlaila.com',
       'https://desertlaila.com',
-      'https://www.desertlaila.com'
+      'https://www.desertlaila.com',
+      'https://backend.desertlaila.com',
 
+ 
     ],
      methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE'],
     credentials: true,
