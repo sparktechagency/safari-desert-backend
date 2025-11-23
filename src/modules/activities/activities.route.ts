@@ -43,7 +43,6 @@ router.get('/single-activity/:id',ActivitiesControllers.getSingleActivities);
 
 router.delete('/delete-activity/:id',ActivitiesControllers.deleteActivities,  auth(
     USER_ROLE.superAdmin,
-  
   ),);
 router.patch('/update-activity/:id',
      upload.single('image'),

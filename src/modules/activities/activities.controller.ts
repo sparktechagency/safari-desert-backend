@@ -14,22 +14,22 @@ import { ActivitiesServices } from './activities.services';
 
 const getAllActivities = catchAsync(async(req:Request,res:Response)=>{
 
-  const result = await ActivitiesServices.getAllBlogsFromDB(req?.query);
+  const result = await ActivitiesServices.getAllActivitiesFromDB(req?.query);
   sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Blogs retrived succesfully!',
+      message: 'Activity retrived succesfully!',
       data: result,
     });
 
 })
 const getSingleActivities = catchAsync(async(req:Request,res:Response)=>{
   const { id } = req.params;
-  const result = await ActivitiesServices.getSingleBlogFromDB(id);
+  const result = await ActivitiesServices.getSingleActivitiesFromDB(id);
   sendResponse(res, {
       statusCode: httpStatus.OK,
       success: true,
-      message: 'Blog retrived succesfully!',
+      message: 'Activity retrived succesfully!',
       data: result,
     });
 
@@ -47,11 +47,11 @@ const payload = req.body
 payload.image = path
 payload.user = req?.user?.userId
   try {
-    const result = await  ActivitiesServices.addBlogIntoDB(payload);
+    const result = await  ActivitiesServices.addActivitiesIntoDB(payload);
 
     sendResponse(res, {
       success: true,
-      message: 'Blog Created Successfull',
+      message: 'Activity Created Successfull',
       statusCode: httpStatus.CREATED,
       data: result,
     });
@@ -63,12 +63,12 @@ payload.user = req?.user?.userId
 const deleteActivities = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
 
-  const result = await ActivitiesServices.deleteBlogFromDB(id);
+  const result = await ActivitiesServices.deleteActivitiesFromDB(id);
 
   sendResponse(res, {
     statusCode: httpStatus.OK,
     success: true,
-    message: 'Blog deleted successfully!',
+    message: 'Activity deleted successfully!',
     data: result,
   });
 })
@@ -78,21 +78,20 @@ const editActivities = async (
   res: Response,
   next: NextFunction,
 ) => {
-//   console.log("create revieew-->",req.body);
   try {
- 
-  const {id} = req.params;
-  const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
-const payload = req.body;
-payload.image = path;
-
-
-    // console.log("Data with file paths: ", data);
+    const { id } = req.params;
+    const payload = req.body;
     
-    const result = await ActivitiesServices.updateBlogFromDB(id,payload)
+    //  Only add image to payload if uploaded
+    if (req.file?.filename) {
+      payload.image = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    }
+
+    const result = await ActivitiesServices.updateActivitiesFromDB(id, payload);
+    
     sendResponse(res, {
       success: true,
-      message: `Blog Edited Succesfull`,
+      message: `Activity Edited Successfully`,
       statusCode: httpStatus.OK,
       data: result,
     });

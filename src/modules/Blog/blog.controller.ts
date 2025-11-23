@@ -83,7 +83,10 @@ const editBlog = async (
   const {id} = req.params;
   const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
 const payload = req.body;
-payload.image = path;
+   // Only add image to payload if uploaded
+    if (req.file?.filename) {
+      payload.image = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    }
 
 
     // console.log("Data with file paths: ", data);

@@ -138,7 +138,8 @@ filter() {
         continue;
       }
       mongo[key] = {
-        $regex: `^${raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
+        // $regex: `^${raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}$`,
+        $regex: raw.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'),
         $options: 'i',
       };
     } else {

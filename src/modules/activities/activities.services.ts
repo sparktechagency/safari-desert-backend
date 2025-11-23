@@ -10,7 +10,7 @@ import ActivityModel from './activities.model';
 import { IActivities } from './activities.interface';
 
 
-const getAllBlogsFromDB = async (query: Record<string, unknown>) => {
+const getAllActivitiesFromDB = async (query: Record<string, unknown>) => {
   const queryBuilder = new QueryBuilder(ActivityModel.find(), query);
   queryBuilder.search(['title', 'description']).filter().sort().paginate();
   const result = await queryBuilder.modelQuery.populate('user');
@@ -18,13 +18,13 @@ const getAllBlogsFromDB = async (query: Record<string, unknown>) => {
 
   return { meta, result };
 };
-const getSingleBlogFromDB = async (id: string) => {
+const getSingleActivitiesFromDB = async (id: string) => {
   const result = await ActivityModel.findById(id).populate('user');
   return result;
 };
 
 
-const addBlogIntoDB = async (payload: IActivities) => {
+const addActivitiesIntoDB = async (payload: IActivities) => {
 const mineId = payload.user
   // console.log("services id",payload.serviceId);
   const user = await UserModel.findById(mineId);
@@ -35,7 +35,7 @@ const mineId = payload.user
   const result = (await ActivityModel.create(payload)).populate('user');
   return result;
 };
-const deleteBlogFromDB = async (id: string) => {
+const deleteActivitiesFromDB = async (id: string) => {
   const event = await ActivityModel.findByIdAndDelete(id);
 
   if (!event) {
@@ -45,7 +45,7 @@ const deleteBlogFromDB = async (id: string) => {
   return event; // return deleted user if needed
 };
 
-const updateBlogFromDB = async (id:string,payload:IActivities)=>{
+const updateActivitiesFromDB = async (id:string,payload:IActivities)=>{
 
  const updated = await ActivityModel
     .findByIdAndUpdate(
@@ -64,4 +64,4 @@ const updateBlogFromDB = async (id:string,payload:IActivities)=>{
 }
 
 export const ActivitiesServices = {
- getAllBlogsFromDB,getSingleBlogFromDB,deleteBlogFromDB,updateBlogFromDB,addBlogIntoDB};
+ getAllActivitiesFromDB,getSingleActivitiesFromDB,deleteActivitiesFromDB,updateActivitiesFromDB,addActivitiesIntoDB};

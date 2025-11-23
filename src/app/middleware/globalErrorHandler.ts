@@ -11,7 +11,7 @@ import handleDuplicateError from '../../errors/handleDuplicateError';
 import AppError from '../../errors/AppError';
 
 
-
+console.log("node env---->",config.NODE_ENV);
 
 const globalErrorHandler: ErrorRequestHandler = (err, req, res, next): void => {
   // console.log(err.statusCode);

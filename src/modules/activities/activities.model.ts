@@ -10,11 +10,11 @@ const BlogSchema: Schema = new Schema<IActivities>(
             required: [true, 'User reference is required'],
           },
     title: { type: String, required: true, trim: true },
-    image: { type: String }, // store image URL or path
+    image: { type: String }, 
     description: { type: String, required: true, trim: true },
   },
   {
-    timestamps: true, // createdAt & updatedAt
+    timestamps: true,
   }
 );
 
