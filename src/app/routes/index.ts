@@ -12,6 +12,7 @@ import { FaqRoutes } from '../../modules/FAQ/faq.routes';
 import { BookingRoutes } from '../../modules/booking/booking.routes';
 import { ContactRoutes } from '../../modules/ContactUs/contact.route';
 import { TransferRoutes } from '../../modules/transferOption/transferOption.routes';
+import { ActivityRoutes } from '../../modules/activities/activities.route';
 
 
 
@@ -37,6 +38,10 @@ const moduleRoutes = [
   {
     path: '/blog',
     route:BlogRoutes
+  },
+  {
+    path: '/activity',
+    route:ActivityRoutes
   },
   {
     path: '/privacy',
