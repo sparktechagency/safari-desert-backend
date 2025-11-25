@@ -2,12 +2,12 @@ import  mongoose, { Document} from 'mongoose';
 
 
 
-export interface ITourOption {
-  name: string;
-  amount: number;
-  quantity:number
-  currency: string;
-} 
+// export interface ITourOption {
+//   name: string;
+//   amount: number;
+//   quantity:number
+//   currency: string;
+// } 
 
 // Price sub-document interface
 export interface Price {
@@ -19,6 +19,12 @@ export interface Availability {
   end: string;
 }
 // src/types/activity.ts
+export interface IActivityIncluded {
+   name: string;
+  amount: Price;
+  quantity:number
+  currency: string;
+}
 
 export enum Activity {
   DUNE_BASHING = "Dune Bashing",
@@ -36,12 +42,14 @@ export enum Activity {
   SAND_BOARDING = "Sand-Boarding",
   BELLY_DANCE_SHOW = "Belly Dance Show",
 }
+
 export type TReview ={
   user_name:string; 
   package_id: mongoose.Types.ObjectId; 
   rating: number;           
   message?: string;    
 }
+
 // Main Package interface extending Mongoose Document
 export interface IPackage extends Document {
      user: mongoose.Types.ObjectId;
@@ -52,30 +60,31 @@ export interface IPackage extends Document {
   duration: string;
   max_adult: number;
   child_min_age: number;
-  tour_options: ITourOption[];
+  // tour_options: ITourOption[];
   pickup?: string;
   availability:Availability;
-  activity?: Activity[];
+  // activity?: Activity[];
+    activity: string[];
+  activityIncluded: IActivityIncluded[];
 review:TReview[];
   adultPrice: Price;
   childPrice: Price;
-  dune_buggy_ride?: Price;
-  single_sitter_dune_buggy?: Price;
-  four_sitter_dune_buggy?: Price;
-  dune_dashing?:Price;
-  quad_bike?: Price;
-  camel_bike?: Price;
-  tea_cofee_soft_drinks?: Price;
-  hena_tattos?: Price;
-  fire_show?: Price;
-  arabic_costume?: Price;
-  shisha_smoking?: Price;
-  falcon_picture?:Price;
-  sand_boarding:Price;
-  belly_dance:Price
+  // dune_buggy_ride?: Price;
+  // single_sitter_dune_buggy?: Price;
+  // four_sitter_dune_buggy?: Price;
+  // dune_dashing?:Price;
+  // quad_bike?: Price;
+  // camel_bike?: Price;
+  // tea_cofee_soft_drinks?: Price;
+  // hena_tattos?: Price;
+  // fire_show?: Price;
+  // arabic_costume?: Price;
+  // shisha_smoking?: Price;
+  // falcon_picture?:Price;
+  // sand_boarding:Price;
+  // belly_dance:Price
 
   discount?: number;
-
   drop_off?: string;
   note?: string;
   refund_policy?: string;
@@ -84,6 +93,6 @@ review:TReview[];
   excluded?: string[];
   tour_plan?: string[];
   description?: string;
-  original_price:Price
+  original_price?:Price
   discount_price?:Price
 }

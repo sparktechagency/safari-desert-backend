@@ -42,57 +42,83 @@ export const availabilityZ = z
     path: ["end"], // error will appear on the 'end' field
   });
 
+
+export const activityIncludedZ = z
+  .array(
+    z
+      .object({
+        name: z.string().trim().min(1, "Activity name is required"),
+
+        // Mongoose: amount: { type: PriceSchema, required: true }
+        amount: priceZ,
+
+        // Mongoose: quantity: { type: Number, required: true }
+        quantity: z.number().int().min(1, "Quantity must be at least 1"),
+
+        // Mongoose: currency: { type: String, required: true }
+        currency: currencyZ.default("AED"),
+      })
+      .strict()
+  )
+  .default([]);
+
+
 /** Reusable array of trimmed strings; defaults to [] when omitted. */
 const stringArrayZ = z.array(z.string().trim()).default([]);
 
-/** Core schema for your Package document (used for create). */
+
+
 export const createPackage = z
   .object({
+    body: z
+      .object({
+        title: z.string().trim().min(1, "Title is required"),
+        location: z.string().trim().min(1),
+        duration: z.string().trim().min(1),
+        max_adult: z.number().int().min(1),
+        child_min_age: z.number().int().min(0),
 
-    body:z.object({
+        pickup: z.string().trim().optional(),
 
-        
-            title: z.string().trim().min(1, "Title is required"),
-            location: z.string().trim().min(1),
-            duration: z.string().trim().min(1),
-            max_adult: z.number().int().min(1),
-            child_min_age: z.number().int().min(0),
-        
-            pickup: z.string().trim().optional(),
-            availability: availabilityZ,
-             activity: z
-    .array(z.nativeEnum(Activity))
-    .default([])
-    .refine((val) => val.length > 0, "At least one activity required"),
-        
-            adultPrice: priceZ,
-            childPrice: priceZ,
-            dune_buggy_ride: priceZ.optional(),
-            single_sitter_dune_buggy: priceZ.optional(),
-            dune_dashing: priceZ.optional(),
-            four_sitter_dune_buggy: priceZ.optional(),
-            quad_bike: priceZ.optional(),
-           tea_cofee_soft_drinks: priceZ.optional(),
-            camel_bike: priceZ.optional(),
-            hena_tattos: priceZ.optional(),
-            fire_show: priceZ.optional(),
-            arabic_costume: priceZ.optional(),
-            shisha_smoking: priceZ.optional(),
-             falcon_picture: priceZ.optional(),
-             sand_boarding: priceZ.optional(),
-             belly_dance: priceZ.optional(),
-        
-            discount: z.number().min(0).max(100).optional(),
-        
-            drop_off: z.string().trim().optional(),
-            note: z.string().trim().optional(),
-            refund_policy: z.string().trim().optional(),
-        
-            included: stringArrayZ,
-            excluded: stringArrayZ,
-            tour_plan: stringArrayZ,
-            description: z.string().trim().optional(),
-    })
-  }).strict();
+        availability: availabilityZ,
 
+        activity: z
+          .array(z.nativeEnum(Activity))
+          .default([])
+          .refine((val) => val.length > 0, "At least one activity is required"),
 
+        adultPrice: priceZ,
+        childPrice: priceZ,
+
+        /** NEW FIELD */
+        activityIncluded: activityIncludedZ,
+
+        tour_options: z
+          .array(
+            z.object({
+              name: z.string().trim().min(1),
+              amount: z.number().nonnegative(),
+              quantity: z.number().int().min(1),
+              currency: currencyZ.default("AED"),
+            })
+          )
+          .default([]),
+
+        discount: z.number().min(0).max(100).optional(),
+
+        drop_off: z.string().trim().optional(),
+        note: z.string().trim().optional(),
+        refund_policy: z.string().trim().optional(),
+
+        included: stringArrayZ,
+        excluded: stringArrayZ,
+        tour_plan: stringArrayZ,
+
+        description: z.string().trim().optional(),
+
+        // original_price: priceZ,
+        // discount_price: priceZ.optional(),
+      })
+      .strict(),
+  })
+  .strict();

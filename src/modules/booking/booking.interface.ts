@@ -5,7 +5,7 @@ export interface Availability {
 }
 
 export interface SelectedTourOption {
-  id: string | number;
+  id?: string | number;
   name: string;
   amount: number;
   currency: string;

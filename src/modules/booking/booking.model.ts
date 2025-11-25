@@ -54,7 +54,7 @@ const AvailabilitySchema = new Schema<IAvailability>({
 });
 
 const SelectedTourOptionSchema = new Schema<ISelectedTourOption>({
-  id: { type: Schema.Types.Mixed, required: true },
+  id: { type: Schema.Types.Mixed},
   name: { type: String, required: true },
   amount: { type: Number, required: true },
   currency: { type: String, required: true },
