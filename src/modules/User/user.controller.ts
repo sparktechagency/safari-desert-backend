@@ -11,6 +11,7 @@ import {
 } from './user.constant';
 import catchAsync from '../../utils/catchAsync';
 import sendResponse from '../../utils/sendResponse';
+import uploadImage from '../../app/middleware/upload';
 
 
 
@@ -20,11 +21,15 @@ const updateProfile = catchAsync(async (req: Request, res: Response) => {
   const payload: TEditProfile = { ...req.body };
 
 
-  if (req.file) {
-    const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
-    payload.image = imageUrl;
+  // if (req.file) {
+  //   const imageUrl = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+  //   payload.image = imageUrl;
 
-  }
+  // }
+      if (req.file) {
+      const imageUrl = await uploadImage(req); // S3 URL আসবে
+      payload.image = imageUrl;
+    }
 
   console.log("payload----->", payload);
 

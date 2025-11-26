@@ -5,10 +5,12 @@ import auth from "../../app/middleware/auth";
 
 import { USER_ROLE } from "../Auth/auth.constant";
 
-import { upload } from "../../app/middleware/upload";
+
 import { PackageControllers } from "./package.controller";
 import { createPackage } from "./package.validation";
 import validateRequest from "../../app/middleware/validateRequest";
+import { upload } from "../../app/middleware/multer";
+
 
 const router = express.Router();
 

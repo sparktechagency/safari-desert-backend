@@ -7,6 +7,7 @@ import catchAsync from '../../utils/catchAsync';
 
 import sendResponse from '../../utils/sendResponse';
 import { BlogServices } from './blog.services';
+import uploadImage from '../../app/middleware/upload';
 
 
 
@@ -41,9 +42,13 @@ const createBlog = async (
   next: NextFunction,
 ) => {
 //   console.log("create revieew-->",req.body);
-  const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
+  // const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
 const payload = req.body
-payload.image = path
+// payload.image = path
+    if (req.file) {
+      const imageUrl = await uploadImage(req); // S3 URL আসবে
+      payload.image = imageUrl;
+    }
 payload.user = req?.user?.userId
   try {
     const result = await  BlogServices.addBlogIntoDB(payload);
@@ -84,11 +89,14 @@ const editBlog = async (
   const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
 const payload = req.body;
    // Only add image to payload if uploaded
-    if (req.file?.filename) {
-      payload.image = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    // if (req.file?.filename) {
+    //   payload.image = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    // }
+
+    if (req.file) {
+      const imageUrl = await uploadImage(req); // S3 URL আসবে
+      payload.image = imageUrl;
     }
-
-
     // console.log("Data with file paths: ", data);
     
     const result = await BlogServices.updateBlogFromDB(id,payload)

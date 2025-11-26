@@ -10,6 +10,7 @@ import config from '../../app/config';
 import { stripe } from '../../utils/stripeClient';
 import AppError from '../../errors/AppError';
 import PackageModel from './package.model';
+import uploadImage from '../../app/middleware/upload';
 
 
 
@@ -99,14 +100,20 @@ const createPackage = async (req: Request, res: Response, next: NextFunction) =>
     const coverImageFile = files?.coverImage?.[0];
     const imageFiles = files?.image || [];
 
-    const uploadedCoverImage = coverImageFile
-      ? `${req.protocol}://${req.get("host")}/uploads/${coverImageFile.filename}`
+    // const uploadedCoverImage = coverImageFile
+    //   ? `${req.protocol}://${req.get("host")}/uploads/${coverImageFile.filename}`
+    //   : null;
+
+    // const uploadedUrls = imageFiles.map(
+    //   (file) => `${req.protocol}://${req.get("host")}/uploads/${file.filename}`
+    // );
+   const uploadedCoverImage = coverImageFile
+      ? await uploadImage(req, coverImageFile)
       : null;
 
-    const uploadedUrls = imageFiles.map(
-      (file) => `${req.protocol}://${req.get("host")}/uploads/${file.filename}`
+    const uploadedUrls = await Promise.all(
+      imageFiles.map((file) => uploadImage(req, file))
     );
-
     const body = req.body || {};
 
     const payload = {
@@ -130,6 +137,69 @@ const createPackage = async (req: Request, res: Response, next: NextFunction) =>
   }
 };
 
+const updatePackage = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+const filesArr = (req.files as Express.Multer.File[]) || [];
+    const single = (req.file as Express.Multer.File) || undefined;
+    const uploaded = filesArr.length ? filesArr : (single ? [single] : []);
+
+    // Normalize body
+    const body: any = req.body || {};
+    
+    // const baseUrl = `${req.protocol}://${req.get("host")}`;
+
+    // const uploadedUrls = uploaded.map(
+    //   (f) => `${baseUrl}/uploads/${f.filename}`
+    // );
+
+    //   const bodyImages: string[] = Array.isArray(body.image_multi)
+    //   ? body.image_multi
+    //   : (typeof body.image_multi === "string" && body.image_multi
+    //       ? [body.image_multi]
+    //       : []);
+
+    // // Merge + clean (trim, dedupe, truthy only)
+    // const image_multi = Array.from(
+    //   new Set([...bodyImages, ...uploadedUrls].map((s) => String(s).trim()).filter(Boolean))
+    // );
+
+
+   const uploadedUrls = await Promise.all(
+    uploaded.map((f) => uploadImage(req, f))
+  );
+
+  const bodyImages: string[] = Array.isArray(body.image_multi)
+    ? body.image_multi
+    : (typeof body.image_multi === 'string' && body.image_multi
+        ? [body.image_multi]
+        : []);
+
+  // Merge + clean (trim, dedupe, truthy only)
+  const image_multi = Array.from(
+    new Set(
+      [...bodyImages, ...uploadedUrls]
+        .map((s) => String(s).trim())
+        .filter(Boolean)
+    )
+  );
+
+
+
+
+
+const payload = req.body
+payload.images = image_multi
+payload.user = req?.user?.userId
+  const result = await PackageServices.updatePackageFromDB(id,payload);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Package Updated successfully!',
+    data: result,
+  });
+})
 
 const deletePackage = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -143,43 +213,7 @@ const deletePackage = catchAsync(async (req: Request, res: Response) => {
     data: result,
   });
 })
-const updatePackage = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
 
-const filesArr = (req.files as Express.Multer.File[]) || [];
-    const single = (req.file as Express.Multer.File) || undefined;
-    const uploaded = filesArr.length ? filesArr : (single ? [single] : []);
-
-    // Normalize body
-    const body: any = req.body || {};
-    
-    const baseUrl = `${req.protocol}://${req.get("host")}`;
-    const uploadedUrls = uploaded.map(
-      (f) => `${baseUrl}/uploads/${f.filename}`
-    );
-
-      const bodyImages: string[] = Array.isArray(body.image_multi)
-      ? body.image_multi
-      : (typeof body.image_multi === "string" && body.image_multi
-          ? [body.image_multi]
-          : []);
-
-    // Merge + clean (trim, dedupe, truthy only)
-    const image_multi = Array.from(
-      new Set([...bodyImages, ...uploadedUrls].map((s) => String(s).trim()).filter(Boolean))
-    );
-const payload = req.body
-payload.images = image_multi
-payload.user = req?.user?.userId
-  const result = await PackageServices.updatePackageFromDB(id,payload);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Package Updated successfully!',
-    data: result,
-  });
-})
 
 
 //stripe  payment initiate

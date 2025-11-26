@@ -6,9 +6,11 @@ import validateRequest from '../../app/middleware/validateRequest';
 
 import { USER_ROLE } from '../Auth/auth.constant';
 
-import { upload } from '../../app/middleware/upload';
+
 import { BlogControllers } from './blog.controller';
 import { BlogCreateSchema } from './blog.validation';
+import { upload } from '../../app/middleware/multer';
+
 
 
 

@@ -6,6 +6,7 @@ import httpStatus from 'http-status';
 import catchAsync from '../../utils/catchAsync';
 import { EventServices } from './event.services';
 import sendResponse from '../../utils/sendResponse';
+import uploadImage from '../../app/middleware/upload';
 
 
 
@@ -40,9 +41,13 @@ const createEvent = async (
   next: NextFunction,
 ) => {
 //   console.log("create revieew-->",req.body);
-  const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
+  // const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
 const payload = req.body
-payload.image = path
+// payload.image = path
+    if (req.file) {
+      const imageUrl = await uploadImage(req); // S3 URL আসবে
+      payload.image = imageUrl;
+    }
 payload.user = req?.user?.userId
   try {
     const result = await  EventServices.addEventIntoDB(payload);
@@ -80,9 +85,13 @@ const editEvent = async (
   try {
  
   const {id} = req.params;
-  const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
+  // const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
 const payload = req.body;
-payload.image = path;
+// payload.image = path;
+    if (req.file) {
+      const imageUrl = await uploadImage(req); // S3 URL আসবে
+      payload.image = imageUrl;
+    }
 
 
     // console.log("Data with file paths: ", data);

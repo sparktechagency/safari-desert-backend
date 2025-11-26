@@ -6,10 +6,11 @@ import validateRequest from '../../app/middleware/validateRequest';
 
 import { USER_ROLE } from '../Auth/auth.constant';
 
-import { upload } from '../../app/middleware/upload';
 
 import { EventControllers } from './event.controller';
 import { EventCreateSchema } from './event.validation';
+import { upload } from '../../app/middleware/multer';
+
 
 const router = express.Router();
 

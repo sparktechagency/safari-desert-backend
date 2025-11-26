@@ -7,6 +7,7 @@ import catchAsync from '../../utils/catchAsync';
 
 import sendResponse from '../../utils/sendResponse';
 import { ActivitiesServices } from './activities.services';
+import uploadImage from '../../app/middleware/upload';
 
 
 
@@ -42,9 +43,15 @@ const createActivities = async (
   next: NextFunction,
 ) => {
 //   console.log("create revieew-->",req.body);
-  const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
+//   const path = `${req.protocol}://${req.get('host')}/uploads/${req.file?.filename}`;
 const payload = req.body
-payload.image = path
+// payload.image = path
+
+    if (req.file) {
+      const imageUrl = await uploadImage(req); // S3 URL আসবে
+      payload.image = imageUrl;
+    }
+
 payload.user = req?.user?.userId
   try {
     const result = await  ActivitiesServices.addActivitiesIntoDB(payload);
@@ -59,20 +66,6 @@ payload.user = req?.user?.userId
     next(err);
   }
 };
-
-const deleteActivities = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-
-  const result = await ActivitiesServices.deleteActivitiesFromDB(id);
-
-  sendResponse(res, {
-    statusCode: httpStatus.OK,
-    success: true,
-    message: 'Activity deleted successfully!',
-    data: result,
-  });
-})
-
 const editActivities = async (
   req: Request,
   res: Response,
@@ -83,8 +76,12 @@ const editActivities = async (
     const payload = req.body;
     
     //  Only add image to payload if uploaded
-    if (req.file?.filename) {
-      payload.image = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    // if (req.file?.filename) {
+    //   payload.image = `${req.protocol}://${req.get('host')}/uploads/${req.file.filename}`;
+    // }
+     if (req.file) {
+      const imageUrl = await uploadImage(req);
+      payload.image = imageUrl;
     }
 
     const result = await ActivitiesServices.updateActivitiesFromDB(id, payload);
@@ -99,6 +96,20 @@ const editActivities = async (
     next(err);
   }
 };
+const deleteActivities = catchAsync(async (req: Request, res: Response) => {
+  const { id } = req.params;
+
+  const result = await ActivitiesServices.deleteActivitiesFromDB(id);
+
+  sendResponse(res, {
+    statusCode: httpStatus.OK,
+    success: true,
+    message: 'Activity deleted successfully!',
+    data: result,
+  });
+})
+
+
 
 export const ActivitiesControllers = {
     createActivities,getAllActivities,getSingleActivities,editActivities,deleteActivities

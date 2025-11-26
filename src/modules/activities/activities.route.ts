@@ -1,3 +1,4 @@
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import express, { NextFunction, Request, Response } from 'express';
 
@@ -6,9 +7,10 @@ import validateRequest from '../../app/middleware/validateRequest';
 
 import { USER_ROLE } from '../Auth/auth.constant';
 
-import { upload } from '../../app/middleware/upload';
 import { ActivityCreateSchema } from './activities.validation';
 import { ActivitiesControllers } from './activities.controller';
+import { upload } from '../../app/middleware/multer';
+
 
 
 

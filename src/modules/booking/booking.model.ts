@@ -58,7 +58,7 @@ const SelectedTourOptionSchema = new Schema<ISelectedTourOption>({
   name: { type: String, required: true },
   amount: { type: Number, required: true },
   currency: { type: String, required: true },
-  quantity: { type: Number, required: true, min: 1 },
+  quantity: { type: Number, required: true, min: 1},
   selected: { type: Boolean, required: true, default: true },
 });
 

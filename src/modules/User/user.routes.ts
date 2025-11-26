@@ -6,10 +6,11 @@ import express, { NextFunction, Request, Response } from 'express';
 import validateRequest from '../../app/middleware/validateRequest';
 
 import { UserControllers } from './user.controller';
-import { upload } from '../../app/middleware/upload';
+
 import { editProfileSchema } from '../Auth/authValidation';
 import auth from '../../app/middleware/auth';
 import { USER_ROLE } from '../Auth/auth.constant';
+import { upload } from '../../app/middleware/multer';
 
 const router = express.Router();
 

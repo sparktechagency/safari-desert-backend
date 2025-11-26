@@ -18,4 +18,8 @@ export default {
   SMTP_PASS: process.env.SMTP_PASS,
   stripe_secret_key: process.env.STRIPE_SECRET_KEY,
   webhook_secret_key: process.env.WEBHOOK_SECRET_KEY,
+  aws_access_key: process.env.AWS_SECRET_ACCESS_KEY,
+  aws_secret_key: process.env.AWS_SECRET_ACCESS_KEY,
+  aws_bucket_name: process.env.AWS_BUCKET_NAME,
+  aws_region: process.env.AWS_REGION,
 };
