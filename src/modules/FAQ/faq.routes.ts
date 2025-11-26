@@ -6,7 +6,6 @@ import validateRequest from '../../app/middleware/validateRequest';
 
 import { USER_ROLE } from '../Auth/auth.constant';
 
-import { upload } from '../../app/middleware/upload';
 import { FaqControllers } from './faq.controller';
 
 
